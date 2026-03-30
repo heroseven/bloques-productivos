@@ -190,11 +190,28 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
       playCompletionSound();
       
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("¡Tiempo Terminado!", {
-          body: "Tu bloque de enfoque ha terminado. Vuelve a la app para confirmar si cumpliste tu objetivo.",
-          requireInteraction: true,
-        });
+        try {
+          const notif = new Notification("¡Tiempo Terminado!", {
+            body: "Tu bloque de enfoque ha terminado. Vuelve a la app para confirmar si cumpliste tu objetivo.",
+            requireInteraction: true,
+          });
+          notif.onclick = () => {
+            window.focus();
+            notif.close();
+          };
+        } catch (e) {
+          console.error("Notification error:", e);
+        }
       }
+
+      // Fallback: Alerta nativa del navegador para forzar interacción (como solicitaste)
+      setTimeout(() => {
+        try {
+          window.alert("¡Tiempo Terminado! Vuelve a la app para confirmar tu bloque.");
+        } catch (e) {
+          console.error("Alert blocked by environment", e);
+        }
+      }, 500);
 
       if (settings.voiceSettings.enabled && settings.voiceSettings.endPhrase?.trim() !== "") {
         setTimeout(() => {

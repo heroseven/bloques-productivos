@@ -21,26 +21,30 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-        if (AudioContext) {
-          audioCtxRef.current = new AudioContext();
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtxRef.current = new AudioContextClass();
           
           const playBeep = () => {
-            if (!audioCtxRef.current) return;
-            const osc = audioCtxRef.current.createOscillator();
-            const gain = audioCtxRef.current.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtxRef.current.destination);
-            
-            osc.type = "square";
-            osc.frequency.setValueAtTime(880, audioCtxRef.current.currentTime); // A5
-            
-            gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
-            gain.gain.linearRampToValueAtTime(0.1, audioCtxRef.current.currentTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtxRef.current.currentTime + 0.5);
-            
-            osc.start(audioCtxRef.current.currentTime);
-            osc.stop(audioCtxRef.current.currentTime + 0.5);
+            if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') return;
+            try {
+              const osc = audioCtxRef.current.createOscillator();
+              const gain = audioCtxRef.current.createGain();
+              osc.connect(gain);
+              gain.connect(audioCtxRef.current.destination);
+              
+              osc.type = "square";
+              osc.frequency.setValueAtTime(880, audioCtxRef.current.currentTime); // A5
+              
+              gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
+              gain.gain.linearRampToValueAtTime(0.1, audioCtxRef.current.currentTime + 0.05);
+              gain.gain.exponentialRampToValueAtTime(0.001, audioCtxRef.current.currentTime + 0.5);
+              
+              osc.start(audioCtxRef.current.currentTime);
+              osc.stop(audioCtxRef.current.currentTime + 0.5);
+            } catch (e) {
+              console.error("Error playing beep", e);
+            }
           };
 
           // Play immediately and then loop
@@ -53,16 +57,23 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
     } else {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close();
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close().catch(e => console.error("Error closing AudioContext:", e));
         audioCtxRef.current = null;
       }
     }
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (audioCtxRef.current) audioCtxRef.current.close();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close().catch(e => console.error("Error closing AudioContext:", e));
+        audioCtxRef.current = null;
+      }
     };
   }, [isOpen]);
 
