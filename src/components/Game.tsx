@@ -204,15 +204,6 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
         }
       }
 
-      // Fallback: Alerta nativa del navegador para forzar interacción (como solicitaste)
-      setTimeout(() => {
-        try {
-          window.alert("¡Tiempo Terminado! Vuelve a la app para confirmar tu bloque.");
-        } catch (e) {
-          console.error("Alert blocked by environment", e);
-        }
-      }, 500);
-
       if (settings.voiceSettings.enabled && settings.voiceSettings.endPhrase?.trim() !== "") {
         setTimeout(() => {
           playPhrase(settings.voiceSettings.endPhrase, settings.voiceSettings.voiceType);
