@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { INSPIRATIONAL_MESSAGES } from "../constants";
@@ -13,6 +13,57 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
     return INSPIRATIONAL_MESSAGES[
       Math.floor(Math.random() * INSPIRATIONAL_MESSAGES.length)
     ];
+  }, [isOpen]);
+
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContext) {
+          audioCtxRef.current = new AudioContext();
+          
+          const playBeep = () => {
+            if (!audioCtxRef.current) return;
+            const osc = audioCtxRef.current.createOscillator();
+            const gain = audioCtxRef.current.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtxRef.current.destination);
+            
+            osc.type = "square";
+            osc.frequency.setValueAtTime(880, audioCtxRef.current.currentTime); // A5
+            
+            gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
+            gain.gain.linearRampToValueAtTime(0.1, audioCtxRef.current.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtxRef.current.currentTime + 0.5);
+            
+            osc.start(audioCtxRef.current.currentTime);
+            osc.stop(audioCtxRef.current.currentTime + 0.5);
+          };
+
+          // Play immediately and then loop
+          playBeep();
+          intervalRef.current = setInterval(playBeep, 1000);
+        }
+      } catch (e) {
+        console.error("AudioContext not supported", e);
+      }
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+        audioCtxRef.current = null;
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (audioCtxRef.current) audioCtxRef.current.close();
+    };
   }, [isOpen]);
 
   return (

@@ -188,6 +188,14 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
       setIsRunning(false);
       setShowModal(true);
       playCompletionSound();
+      
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("¡Tiempo Terminado!", {
+          body: "Tu bloque de enfoque ha terminado. Vuelve a la app para confirmar si cumpliste tu objetivo.",
+          requireInteraction: true,
+        });
+      }
+
       if (settings.voiceSettings.enabled && settings.voiceSettings.endPhrase?.trim() !== "") {
         setTimeout(() => {
           playPhrase(settings.voiceSettings.endPhrase, settings.voiceSettings.voiceType);

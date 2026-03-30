@@ -80,6 +80,9 @@ export default function Dashboard({ stats, onStartGame }: DashboardProps) {
   };
 
   const handleStart = () => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
     onStartGame({ duration, blocksCount, backgroundSound, voiceSettings });
   };
 
