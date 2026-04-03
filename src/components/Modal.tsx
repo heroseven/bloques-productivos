@@ -85,37 +85,37 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl overflow-hidden relative"
+            className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl overflow-y-auto max-h-[95vh] relative flex flex-col"
           >
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shrink-0" />
 
-            <div className="text-center space-y-6">
-              <div className="mx-auto w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
-                <span className="text-4xl">✨</span>
+            <div className="text-center space-y-4 sm:space-y-6 my-auto">
+              <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-2 sm:mb-6 shrink-0 hidden sm:flex [@media(min-height:500px)]:flex">
+                <span className="text-3xl sm:text-4xl">✨</span>
               </div>
 
-              <h2 className="text-3xl font-bold text-slate-800 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
                 ¡Tiempo Terminado!
               </h2>
 
-              <p className="text-lg text-slate-600 font-medium italic px-4">
+              <p className="text-base sm:text-lg text-slate-600 font-medium italic px-2 sm:px-4">
                 "{message}"
               </p>
 
-              <div className="pt-8 space-y-4">
+              <div className="pt-4 sm:pt-8 space-y-3 sm:space-y-4 shrink-0">
                 <button
                   onClick={() => onComplete(true)}
-                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 text-lg shadow-lg shadow-emerald-500/30"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-2xl py-3 sm:py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg shadow-lg shadow-emerald-500/30"
                 >
-                  <CheckCircle className="w-6 h-6" />
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                   Sí, cumplí
                 </button>
 
                 <button
                   onClick={() => onComplete(false)}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-2xl py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 text-lg"
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-2xl py-3 sm:py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg"
                 >
-                  <XCircle className="w-6 h-6" />
+                  <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                   No, no cumplí
                 </button>
               </div>
