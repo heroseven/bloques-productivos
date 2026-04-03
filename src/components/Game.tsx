@@ -267,7 +267,7 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
   const progressPercentage = (currentBlock / settings.blocksCount) * 100;
 
   return (
-    <div className="max-w-3xl mx-auto p-6 min-h-screen flex flex-col justify-center">
+    <div className="w-full h-screen overflow-hidden bg-slate-50 p-2 sm:p-4 flex items-center justify-center">
       {settings.backgroundSound !== "none" && (
         <audio
           ref={audioRef}
@@ -276,9 +276,10 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
           className="hidden"
         />
       )}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center space-y-8 sm:space-y-12">
-        {/* Header & Progress */}
-        <div className="w-full space-y-6">
+      <div className="w-full max-w-3xl h-full max-h-[800px] bg-white rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-hidden">
+        
+        {/* Header & Progress - Hidden on short screens */}
+        <div className="w-full space-y-6 [@media(max-height:500px)]:hidden">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-800 text-center">
               Serie en progreso
@@ -305,63 +306,64 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
+        </div>
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            {Array.from({ length: settings.blocksCount }).map((_, idx) => {
-              const isPast = idx < currentBlock;
-              const isCurrent = idx === currentBlock;
-              const success = results[idx];
+        {/* Circles - Always visible but compact */}
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          {Array.from({ length: settings.blocksCount }).map((_, idx) => {
+            const isPast = idx < currentBlock;
+            const isCurrent = idx === currentBlock;
+            const success = results[idx];
 
-              if (isPast) {
-                return success ? (
-                  <CheckCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500" />
-                ) : (
-                  <XCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-rose-500" />
-                );
-              }
-              if (isCurrent) {
-                return (
-                  <Circle
-                    key={idx}
-                    className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-500 animate-pulse"
-                  />
-                );
-              }
-              return <Circle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-slate-200" />;
-            })}
-          </div>
+            if (isPast) {
+              return success ? (
+                <CheckCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500" />
+              ) : (
+                <XCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-rose-500" />
+              );
+            }
+            if (isCurrent) {
+              return (
+                <Circle
+                  key={idx}
+                  className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-500 animate-pulse"
+                />
+              );
+            }
+            return <Circle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-slate-200" />;
+          })}
         </div>
 
         {/* Timer Display */}
-        <div className="relative flex items-center justify-center w-full">
-          <div className="text-6xl sm:text-8xl md:text-[8rem] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none">
+        <div className="relative flex items-center justify-center w-full flex-1 min-h-0">
+          <div className="text-[clamp(4rem,35vh,8rem)] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none">
             {formatTime(timeRemaining)}
           </div>
         </div>
 
         {/* Controls */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <button
             onClick={() => setIsRunning(!isRunning)}
-            className={`w-20 h-20 rounded-full flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
+            className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
               isRunning
                 ? "bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/30"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-500/30"
             }`}
           >
             {isRunning ? (
-              <Pause className="w-10 h-10 fill-current" />
+              <Pause className="w-8 h-8 sm:w-10 sm:h-10 fill-current" />
             ) : (
-              <Play className="w-10 h-10 fill-current ml-2" />
+              <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-current ml-1 sm:ml-2" />
             )}
           </button>
 
           <button
             onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
-            className="w-16 h-16 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors"
             title="Abandonar Serie"
           >
-            <Square className="w-6 h-6 fill-current" />
+            <Square className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
           </button>
         </div>
       </div>
