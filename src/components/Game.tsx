@@ -276,24 +276,24 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
           className="hidden"
         />
       )}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col items-center space-y-12">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center space-y-8 sm:space-y-12">
         {/* Header & Progress */}
         <div className="w-full space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-slate-800">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 text-center">
               Serie en progreso
             </h2>
-            <div className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-full">
+            <div className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-full whitespace-nowrap">
               Bloque {currentBlock + 1} de {settings.blocksCount}
             </div>
           </div>
           
-          <div className="flex justify-center items-center gap-4 text-sm font-medium text-slate-500">
-            <div className="bg-slate-100 px-4 py-2 rounded-xl flex items-center gap-2">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-sm font-medium text-slate-500">
+            <div className="bg-slate-100 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
               Planeado: {settings.duration * settings.blocksCount}:00
             </div>
-            <div className="bg-slate-100 px-4 py-2 rounded-xl flex items-center gap-2">
+            <div className="bg-slate-100 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
               Real: {formatTime(actualSeconds)}
             </div>
@@ -306,7 +306,7 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
             />
           </div>
 
-          <div className="flex justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {Array.from({ length: settings.blocksCount }).map((_, idx) => {
               const isPast = idx < currentBlock;
               const isCurrent = idx === currentBlock;
@@ -314,27 +314,27 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
 
               if (isPast) {
                 return success ? (
-                  <CheckCircle key={idx} className="w-8 h-8 text-emerald-500" />
+                  <CheckCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-500" />
                 ) : (
-                  <XCircle key={idx} className="w-8 h-8 text-rose-500" />
+                  <XCircle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-rose-500" />
                 );
               }
               if (isCurrent) {
                 return (
                   <Circle
                     key={idx}
-                    className="w-8 h-8 text-indigo-500 animate-pulse"
+                    className="w-6 h-6 sm:w-8 sm:h-8 text-indigo-500 animate-pulse"
                   />
                 );
               }
-              return <Circle key={idx} className="w-8 h-8 text-slate-200" />;
+              return <Circle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-slate-200" />;
             })}
           </div>
         </div>
 
         {/* Timer Display */}
-        <div className="relative flex items-center justify-center">
-          <div className="text-[8rem] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none">
+        <div className="relative flex items-center justify-center w-full">
+          <div className="text-6xl sm:text-8xl md:text-[8rem] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none">
             {formatTime(timeRemaining)}
           </div>
         </div>
