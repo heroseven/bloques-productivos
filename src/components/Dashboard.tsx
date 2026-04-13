@@ -15,6 +15,9 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
 } from "lucide-react";
 import {
   BarChart,
@@ -46,6 +49,8 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
   const [selectedTemplate, setSelectedTemplate] = useState<string>("default");
   const [backgroundSound, setBackgroundSound] = useState<string>("none");
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
+  const [chartView, setChartView] = useState<'week' | 'month'>('week');
+  const [chartOffset, setChartOffset] = useState<number>(0);
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(() => {
     const saved = localStorage.getItem("focusblocks_voice_settings");
     if (saved) {
@@ -101,83 +106,181 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
       ? Math.round((stats.completedBlocks / stats.totalBlocks) * 100)
       : 0;
 
-  const getWeeklyData = () => {
+  const getChartData = () => {
     const data = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
+    if (chartView === 'week') {
+      const endDate = new Date(today);
+      endDate.setDate(endDate.getDate() - (chartOffset * 7));
       
-      const dayName = d.toLocaleDateString("es-ES", { weekday: "short" });
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(endDate);
+        d.setDate(d.getDate() - i);
+        
+        const dayName = d.toLocaleDateString("es-ES", { weekday: "short" });
+        const dateLabel = d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+        
+        const blocksOnDay = stats.history.reduce((acc, game) => {
+          const gameDate = new Date(game.date);
+          if (
+            gameDate.getDate() === d.getDate() &&
+            gameDate.getMonth() === d.getMonth() &&
+            gameDate.getFullYear() === d.getFullYear()
+          ) {
+            return acc + game.completedBlocks;
+          }
+          return acc;
+        }, 0);
+
+        const gamesOnDay = stats.history.reduce((acc, game) => {
+          const gameDate = new Date(game.date);
+          if (
+            gameDate.getDate() === d.getDate() &&
+            gameDate.getMonth() === d.getMonth() &&
+            gameDate.getFullYear() === d.getFullYear()
+          ) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
+
+        data.push({
+          name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
+          dateLabel,
+          bloques: blocksOnDay,
+          juegos: gamesOnDay,
+        });
+      }
+    } else {
+      const targetDate = new Date(today);
+      targetDate.setMonth(targetDate.getMonth() - chartOffset);
+      const year = targetDate.getFullYear();
+      const month = targetDate.getMonth();
       
-      const blocksOnDay = stats.history.reduce((acc, game) => {
-        const gameDate = new Date(game.date);
-        if (
-          gameDate.getDate() === d.getDate() &&
-          gameDate.getMonth() === d.getMonth() &&
-          gameDate.getFullYear() === d.getFullYear()
-        ) {
-          return acc + game.completedBlocks;
-        }
-        return acc;
-      }, 0);
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      for (let i = 1; i <= daysInMonth; i++) {
+        const d = new Date(year, month, i);
+        if (d > today && chartOffset === 0) break;
+        
+        const dateLabel = d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+        
+        const blocksOnDay = stats.history.reduce((acc, game) => {
+          const gameDate = new Date(game.date);
+          if (
+            gameDate.getDate() === d.getDate() &&
+            gameDate.getMonth() === d.getMonth() &&
+            gameDate.getFullYear() === d.getFullYear()
+          ) {
+            return acc + game.completedBlocks;
+          }
+          return acc;
+        }, 0);
 
-      const gamesOnDay = stats.history.reduce((acc, game) => {
-        const gameDate = new Date(game.date);
-        if (
-          gameDate.getDate() === d.getDate() &&
-          gameDate.getMonth() === d.getMonth() &&
-          gameDate.getFullYear() === d.getFullYear()
-        ) {
-          return acc + 1;
-        }
-        return acc;
-      }, 0);
+        const gamesOnDay = stats.history.reduce((acc, game) => {
+          const gameDate = new Date(game.date);
+          if (
+            gameDate.getDate() === d.getDate() &&
+            gameDate.getMonth() === d.getMonth() &&
+            gameDate.getFullYear() === d.getFullYear()
+          ) {
+            return acc + 1;
+          }
+          return acc;
+        }, 0);
 
-      data.push({
-        name: dayName.charAt(0).toUpperCase() + dayName.slice(1),
-        bloques: blocksOnDay,
-        juegos: gamesOnDay,
-      });
+        data.push({
+          name: i.toString(),
+          dateLabel,
+          bloques: blocksOnDay,
+          juegos: gamesOnDay,
+        });
+      }
     }
     return data;
   };
 
-  const getWeeklyTrend = () => {
+  const getTrend = () => {
+    let currentPeriodBlocks = 0;
+    let previousPeriodBlocks = 0;
+    
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let currentWeekBlocks = 0;
-    let previousWeekBlocks = 0;
+    if (chartView === 'week') {
+      const currentEndDate = new Date(today);
+      currentEndDate.setDate(currentEndDate.getDate() - (chartOffset * 7));
+      const currentStartDate = new Date(currentEndDate);
+      currentStartDate.setDate(currentStartDate.getDate() - 6);
+      
+      const prevEndDate = new Date(currentStartDate);
+      prevEndDate.setDate(prevEndDate.getDate() - 1);
+      const prevStartDate = new Date(prevEndDate);
+      prevStartDate.setDate(prevStartDate.getDate() - 6);
 
-    stats.history.forEach(game => {
-      const gameDate = new Date(game.date);
-      gameDate.setHours(0, 0, 0, 0);
-      const diffTime = today.getTime() - gameDate.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      stats.history.forEach(game => {
+        const gameDate = new Date(game.date);
+        gameDate.setHours(0, 0, 0, 0);
+        if (gameDate >= currentStartDate && gameDate <= currentEndDate) {
+          currentPeriodBlocks += game.completedBlocks;
+        } else if (gameDate >= prevStartDate && gameDate <= prevEndDate) {
+          previousPeriodBlocks += game.completedBlocks;
+        }
+      });
+    } else {
+      const targetDate = new Date(today);
+      targetDate.setMonth(targetDate.getMonth() - chartOffset);
+      const currentMonth = targetDate.getMonth();
+      const currentYear = targetDate.getFullYear();
+      
+      const prevDate = new Date(targetDate);
+      prevDate.setMonth(prevDate.getMonth() - 1);
+      const prevMonth = prevDate.getMonth();
+      const prevYear = prevDate.getFullYear();
 
-      if (diffDays >= 0 && diffDays <= 6) {
-        currentWeekBlocks += game.completedBlocks;
-      } else if (diffDays >= 7 && diffDays <= 13) {
-        previousWeekBlocks += game.completedBlocks;
-      }
-    });
+      stats.history.forEach(game => {
+        const gameDate = new Date(game.date);
+        if (gameDate.getMonth() === currentMonth && gameDate.getFullYear() === currentYear) {
+          currentPeriodBlocks += game.completedBlocks;
+        } else if (gameDate.getMonth() === prevMonth && gameDate.getFullYear() === prevYear) {
+          previousPeriodBlocks += game.completedBlocks;
+        }
+      });
+    }
 
-    if (previousWeekBlocks === 0) {
-      if (currentWeekBlocks === 0) return { percentage: 0, trend: 'neutral' };
+    if (previousPeriodBlocks === 0) {
+      if (currentPeriodBlocks === 0) return { percentage: 0, trend: 'neutral' };
       return { percentage: 100, trend: 'up' };
     }
 
-    const percentage = Math.round(((currentWeekBlocks - previousWeekBlocks) / previousWeekBlocks) * 100);
+    const percentage = Math.round(((currentPeriodBlocks - previousPeriodBlocks) / previousPeriodBlocks) * 100);
     
     if (percentage > 0) return { percentage, trend: 'up' };
     if (percentage < 0) return { percentage: Math.abs(percentage), trend: 'down' };
     return { percentage: 0, trend: 'neutral' };
   };
 
-  const weeklyData = getWeeklyData();
+  const chartData = getChartData();
+  
+  const getChartLabel = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (chartView === 'week') {
+      const endDate = new Date(today);
+      endDate.setDate(endDate.getDate() - (chartOffset * 7));
+      const startDate = new Date(endDate);
+      startDate.setDate(startDate.getDate() - 6);
+      
+      return `${startDate.toLocaleDateString("es-ES", { day: "numeric", month: "short" })} - ${endDate.toLocaleDateString("es-ES", { day: "numeric", month: "short" })}`;
+    } else {
+      const targetDate = new Date(today);
+      targetDate.setMonth(targetDate.getMonth() - chartOffset);
+      return targetDate.toLocaleDateString("es-ES", { month: "long", year: "numeric" }).replace(/^\w/, (c) => c.toUpperCase());
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
@@ -190,35 +293,76 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
         </p>
       </header>
 
-      {/* Weekly Evolution Chart */}
+      {/* Evolution Chart */}
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-indigo-500" />
-            Evolución de la Semana
-          </h2>
-          {(() => {
-            const { percentage, trend } = getWeeklyTrend();
-            if (trend === 'neutral' && percentage === 0) return null;
-            
-            return (
-              <div className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full ${
-                trend === 'up' ? 'bg-emerald-50 text-emerald-600' :
-                trend === 'down' ? 'bg-rose-50 text-rose-600' :
-                'bg-slate-50 text-slate-600'
-              }`}>
-                {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : 
-                 trend === 'down' ? <TrendingDown className="w-4 h-4" /> : 
-                 <Minus className="w-4 h-4" />}
-                <span>{trend === 'up' ? '+' : trend === 'down' ? '-' : ''}{percentage}%</span>
-                <span className="text-xs opacity-75 ml-1 font-normal">vs sem. anterior</span>
+          <div className="flex items-center gap-4">
+            <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+              <BarChart2 className="w-5 h-5 text-indigo-500" />
+              Evolución
+            </h2>
+            <div className="flex bg-slate-100 rounded-lg p-1">
+              <button
+                onClick={() => { setChartView('week'); setChartOffset(0); }}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'week' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Semana
+              </button>
+              <button
+                onClick={() => { setChartView('month'); setChartOffset(0); }}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'month' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+              >
+                Mes
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1 border border-slate-100">
+              <button 
+                onClick={() => setChartOffset(prev => prev + 1)}
+                className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <div className="flex items-center gap-1.5 px-2 min-w-[120px] justify-center">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-sm font-medium text-slate-600">
+                  {getChartLabel()}
+                </span>
               </div>
-            );
-          })()}
+              <button 
+                onClick={() => setChartOffset(prev => Math.max(0, prev - 1))}
+                disabled={chartOffset === 0}
+                className={`p-1 rounded-md transition-colors ${chartOffset === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'}`}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {(() => {
+              const { percentage, trend } = getTrend();
+              if (trend === 'neutral' && percentage === 0) return null;
+              
+              return (
+                <div className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full ${
+                  trend === 'up' ? 'bg-emerald-50 text-emerald-600' :
+                  trend === 'down' ? 'bg-rose-50 text-rose-600' :
+                  'bg-slate-50 text-slate-600'
+                }`}>
+                  {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : 
+                   trend === 'down' ? <TrendingDown className="w-4 h-4" /> : 
+                   <Minus className="w-4 h-4" />}
+                  <span>{trend === 'up' ? '+' : trend === 'down' ? '-' : ''}{percentage}%</span>
+                  <span className="text-xs opacity-75 ml-1 font-normal hidden sm:inline">vs ant.</span>
+                </div>
+              );
+            })()}
+          </div>
         </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={weeklyData}>
+            <BarChart data={chartData}>
               <XAxis 
                 dataKey="name" 
                 axisLine={false} 
@@ -236,6 +380,12 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               <Tooltip 
                 cursor={{ fill: '#f1f5f9' }}
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                labelFormatter={(label, payload) => {
+                  if (payload && payload.length > 0) {
+                    return payload[0].payload.dateLabel;
+                  }
+                  return label;
+                }}
               />
               <Legend verticalAlign="top" height={36} iconType="circle" />
               <Bar dataKey="bloques" name="Bloques" fill="#6366f1" radius={[4, 4, 0, 0]} />
