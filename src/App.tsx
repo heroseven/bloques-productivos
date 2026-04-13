@@ -3,6 +3,7 @@ import { Stats, GameSettings, GameRecord } from "./types";
 import Dashboard from "./components/Dashboard";
 import Game from "./components/Game";
 import Summary from "./components/Summary";
+import BedtimeCountdown from "./components/BedtimeCountdown";
 
 type View = "dashboard" | "game" | "summary";
 
@@ -145,6 +146,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
+      <BedtimeCountdown />
+      
       {view === "dashboard" && (
         <Dashboard stats={stats} onStartGame={handleStartGame} />
       )}
