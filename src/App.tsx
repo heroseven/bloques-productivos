@@ -27,6 +27,9 @@ export default function App() {
     strike: number;
     actualSeconds: number;
   } | null>(null);
+  const [bedtime, setBedtime] = useState<string>(() => {
+    return localStorage.getItem("focusblocks_bedtime") || "21:45";
+  });
 
   useEffect(() => {
     const savedStats = localStorage.getItem("focusblocks_stats");
@@ -38,6 +41,11 @@ export default function App() {
       }
     }
   }, []);
+
+  const handleBedtimeChange = (newTime: string) => {
+    setBedtime(newTime);
+    localStorage.setItem("focusblocks_bedtime", newTime);
+  };
 
   const saveStats = (newStats: Stats) => {
     setStats(newStats);
@@ -146,10 +154,15 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
-      <BedtimeCountdown />
+      <BedtimeCountdown bedtime={bedtime} />
       
       {view === "dashboard" && (
-        <Dashboard stats={stats} onStartGame={handleStartGame} />
+        <Dashboard 
+          stats={stats} 
+          onStartGame={handleStartGame} 
+          bedtime={bedtime}
+          onBedtimeChange={handleBedtimeChange}
+        />
       )}
 
       {view === "game" && currentSettings && (

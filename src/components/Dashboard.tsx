@@ -11,6 +11,10 @@ import {
   BarChart2,
   ChevronDown,
   ChevronUp,
+  Moon,
+  TrendingUp,
+  TrendingDown,
+  Minus,
 } from "lucide-react";
 import {
   BarChart,
@@ -28,9 +32,11 @@ import { playPhrase } from "../utils/voice";
 interface DashboardProps {
   stats: Stats;
   onStartGame: (settings: GameSettings) => void;
+  bedtime: string;
+  onBedtimeChange: (time: string) => void;
 }
 
-export default function Dashboard({ stats, onStartGame }: DashboardProps) {
+export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange }: DashboardProps) {
   const [duration, setDuration] = useState<number>(3);
   const [blocksCount, setBlocksCount] = useState<number>(3);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("default");
@@ -135,6 +141,38 @@ export default function Dashboard({ stats, onStartGame }: DashboardProps) {
     return data;
   };
 
+  const getWeeklyTrend = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let currentWeekBlocks = 0;
+    let previousWeekBlocks = 0;
+
+    stats.history.forEach(game => {
+      const gameDate = new Date(game.date);
+      gameDate.setHours(0, 0, 0, 0);
+      const diffTime = today.getTime() - gameDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 0 && diffDays <= 6) {
+        currentWeekBlocks += game.completedBlocks;
+      } else if (diffDays >= 7 && diffDays <= 13) {
+        previousWeekBlocks += game.completedBlocks;
+      }
+    });
+
+    if (previousWeekBlocks === 0) {
+      if (currentWeekBlocks === 0) return { percentage: 0, trend: 'neutral' };
+      return { percentage: 100, trend: 'up' };
+    }
+
+    const percentage = Math.round(((currentWeekBlocks - previousWeekBlocks) / previousWeekBlocks) * 100);
+    
+    if (percentage > 0) return { percentage, trend: 'up' };
+    if (percentage < 0) return { percentage: Math.abs(percentage), trend: 'down' };
+    return { percentage: 0, trend: 'neutral' };
+  };
+
   const weeklyData = getWeeklyData();
 
   return (
@@ -150,10 +188,30 @@ export default function Dashboard({ stats, onStartGame }: DashboardProps) {
 
       {/* Weekly Evolution Chart */}
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
-        <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
-          <BarChart2 className="w-5 h-5 text-indigo-500" />
-          Evolución de la Semana
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+            <BarChart2 className="w-5 h-5 text-indigo-500" />
+            Evolución de la Semana
+          </h2>
+          {(() => {
+            const { percentage, trend } = getWeeklyTrend();
+            if (trend === 'neutral' && percentage === 0) return null;
+            
+            return (
+              <div className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full ${
+                trend === 'up' ? 'bg-emerald-50 text-emerald-600' :
+                trend === 'down' ? 'bg-rose-50 text-rose-600' :
+                'bg-slate-50 text-slate-600'
+              }`}>
+                {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : 
+                 trend === 'down' ? <TrendingDown className="w-4 h-4" /> : 
+                 <Minus className="w-4 h-4" />}
+                <span>{trend === 'up' ? '+' : trend === 'down' ? '-' : ''}{percentage}%</span>
+                <span className="text-xs opacity-75 ml-1 font-normal">vs sem. anterior</span>
+              </div>
+            );
+          })()}
+        </div>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={weeklyData}>
@@ -467,6 +525,30 @@ export default function Dashboard({ stats, onStartGame }: DashboardProps) {
           <span className="text-2xl font-bold text-slate-800">
             {successRate}%
           </span>
+        </div>
+      </div>
+
+      {/* General Settings */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100">
+        <h2 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Moon className="w-5 h-5 text-indigo-500" />
+          Configuración General
+        </h2>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-md">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">
+              Hora de dormir
+            </label>
+            <p className="text-xs text-slate-500">
+              Te avisaremos cuando sea hora de descansar.
+            </p>
+          </div>
+          <input
+            type="time"
+            value={bedtime}
+            onChange={(e) => onBedtimeChange(e.target.value)}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
       </div>
 

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Moon } from 'lucide-react';
 
-export default function BedtimeCountdown() {
+interface BedtimeCountdownProps {
+  bedtime?: string;
+}
+
+export default function BedtimeCountdown({ bedtime = "21:45" }: BedtimeCountdownProps) {
   const [timeLeft, setTimeLeft] = useState('');
   const [isUrgent, setIsUrgent] = useState(false);
 
@@ -9,28 +13,28 @@ export default function BedtimeCountdown() {
     const calculateTimeLeft = () => {
       const now = new Date();
       const target = new Date();
-      target.setHours(21, 45, 0, 0);
+      
+      const [hoursStr, minutesStr] = bedtime.split(':');
+      const targetHours = parseInt(hoursStr, 10) || 21;
+      const targetMinutes = parseInt(minutesStr, 10) || 45;
 
-      // Si ya pasó las 9:45 PM
+      target.setHours(targetHours, targetMinutes, 0, 0);
+
+      // Si ya pasó la hora de dormir de hoy
       if (now.getTime() > target.getTime()) {
-        // Si es entre las 21:45 y las 03:59 AM, es hora de dormir
-        if ((now.getHours() === 21 && now.getMinutes() >= 45) || now.getHours() >= 22 || now.getHours() < 4) {
+        const timeSinceBedtime = now.getTime() - target.getTime();
+        // Si estamos dentro de las 6 horas posteriores a la hora de dormir, es hora de dormir
+        if (timeSinceBedtime < 6 * 60 * 60 * 1000) {
           setIsUrgent(true);
           return "¡A dormir!";
+        } else {
+          // Si ya pasaron más de 6 horas, el próximo objetivo es mañana
+          target.setDate(target.getDate() + 1);
         }
-        // Si es después de las 4 AM (ej. 5 AM), el target debe ser las 21:45 de HOY, lo cual ya está seteado arriba
-        // Pero wait, si son las 5 AM, now.getTime() NO es mayor que target.getTime() (que es a las 21:45 de hoy).
-        // Así que esta rama solo se ejecuta si son más de las 21:45 de hoy.
       }
 
-      let diff = target.getTime() - now.getTime();
+      const diff = target.getTime() - now.getTime();
       
-      // Si diff es negativo, significa que ya pasó la hora (manejado arriba, pero por si acaso)
-      if (diff < 0) {
-        setIsUrgent(true);
-        return "¡A dormir!";
-      }
-
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       
@@ -50,7 +54,7 @@ export default function BedtimeCountdown() {
     }, 10000); // Actualizar cada 10 segundos
 
     return () => clearInterval(interval);
-  }, []);
+  }, [bedtime]);
 
   return (
     <div className={`fixed top-3 right-3 sm:top-6 sm:right-6 z-50 backdrop-blur-md px-3 py-2 rounded-2xl shadow-lg flex items-center gap-2 text-sm font-bold border transition-colors duration-500 ${
