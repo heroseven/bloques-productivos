@@ -30,6 +30,12 @@ export default function App() {
   const [bedtime, setBedtime] = useState<string>(() => {
     return localStorage.getItem("focusblocks_bedtime") || "21:45";
   });
+  const [workdayEnd, setWorkdayEnd] = useState<string>(() => {
+    return localStorage.getItem("focusblocks_workday_end") || "17:30";
+  });
+  const [lunchTime, setLunchTime] = useState<string>(() => {
+    return localStorage.getItem("focusblocks_lunch_time") || "13:00";
+  });
 
   useEffect(() => {
     const savedStats = localStorage.getItem("focusblocks_stats");
@@ -45,6 +51,16 @@ export default function App() {
   const handleBedtimeChange = (newTime: string) => {
     setBedtime(newTime);
     localStorage.setItem("focusblocks_bedtime", newTime);
+  };
+
+  const handleWorkdayEndChange = (newTime: string) => {
+    setWorkdayEnd(newTime);
+    localStorage.setItem("focusblocks_workday_end", newTime);
+  };
+
+  const handleLunchTimeChange = (newTime: string) => {
+    setLunchTime(newTime);
+    localStorage.setItem("focusblocks_lunch_time", newTime);
   };
 
   const saveStats = (newStats: Stats) => {
@@ -154,7 +170,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100">
-      <BedtimeCountdown bedtime={bedtime} />
+      <BedtimeCountdown bedtime={bedtime} workdayEnd={workdayEnd} lunchTime={lunchTime} />
       
       {view === "dashboard" && (
         <Dashboard 
@@ -162,6 +178,10 @@ export default function App() {
           onStartGame={handleStartGame} 
           bedtime={bedtime}
           onBedtimeChange={handleBedtimeChange}
+          workdayEnd={workdayEnd}
+          onWorkdayEndChange={handleWorkdayEndChange}
+          lunchTime={lunchTime}
+          onLunchTimeChange={handleLunchTimeChange}
         />
       )}
 

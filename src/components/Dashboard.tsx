@@ -34,9 +34,13 @@ interface DashboardProps {
   onStartGame: (settings: GameSettings) => void;
   bedtime: string;
   onBedtimeChange: (time: string) => void;
+  workdayEnd: string;
+  onWorkdayEndChange: (time: string) => void;
+  lunchTime: string;
+  onLunchTimeChange: (time: string) => void;
 }
 
-export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange }: DashboardProps) {
+export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange, workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange }: DashboardProps) {
   const [duration, setDuration] = useState<number>(3);
   const [blocksCount, setBlocksCount] = useState<number>(3);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("default");
@@ -534,21 +538,57 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
           <Moon className="w-5 h-5 text-indigo-500" />
           Configuración General
         </h2>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 max-w-md">
-          <div className="space-y-1">
-            <label className="text-sm font-medium text-slate-700">
-              Hora de dormir
-            </label>
-            <p className="text-xs text-slate-500">
-              Te avisaremos cuando sea hora de descansar.
-            </p>
+        <div className="space-y-6 max-w-md">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Hora de almuerzo
+              </label>
+              <p className="text-xs text-slate-500">
+                Hora a la que tomas tu descanso para comer.
+              </p>
+            </div>
+            <input
+              type="time"
+              value={lunchTime}
+              onChange={(e) => onLunchTimeChange(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
-          <input
-            type="time"
-            value={bedtime}
-            onChange={(e) => onBedtimeChange(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Fin de jornada
+              </label>
+              <p className="text-xs text-slate-500">
+                Hora a la que terminas de trabajar.
+              </p>
+            </div>
+            <input
+              type="time"
+              value={workdayEnd}
+              onChange={(e) => onWorkdayEndChange(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-slate-700">
+                Hora de dormir
+              </label>
+              <p className="text-xs text-slate-500">
+                Te avisaremos cuando sea hora de descansar.
+              </p>
+            </div>
+            <input
+              type="time"
+              value={bedtime}
+              onChange={(e) => onBedtimeChange(e.target.value)}
+              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
         </div>
       </div>
 
