@@ -41,9 +41,11 @@ interface DashboardProps {
   onWorkdayEndChange: (time: string) => void;
   lunchTime: string;
   onLunchTimeChange: (time: string) => void;
+  motivation: string;
+  onMotivationChange: (text: string) => void;
 }
 
-export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange, workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange }: DashboardProps) {
+export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange, workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange, motivation, onMotivationChange }: DashboardProps) {
   const [duration, setDuration] = useState<number>(3);
   const [blocksCount, setBlocksCount] = useState<number>(3);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("default");
@@ -284,13 +286,24 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <header className="text-center space-y-2">
-        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
-          FocusBlocks
-        </h1>
-        <p className="text-slate-500 text-lg">
-          Juego de productividad por bloques de tiempo
-        </p>
+      <header className="text-center space-y-4">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
+            FocusBlocks
+          </h1>
+          <p className="text-slate-500 text-lg">
+            Juego de productividad por bloques de tiempo
+          </p>
+        </div>
+        <div className="max-w-md mx-auto">
+          <input
+            type="text"
+            value={motivation}
+            onChange={(e) => onMotivationChange(e.target.value)}
+            placeholder="¿Cuál es tu motivación?"
+            className="w-full text-center bg-transparent border-b-2 border-slate-200 hover:border-indigo-300 focus:border-indigo-500 px-4 py-2 text-slate-600 font-medium focus:outline-none transition-colors placeholder:text-slate-300"
+          />
+        </div>
       </header>
 
       {/* Evolution Chart */}

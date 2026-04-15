@@ -36,6 +36,9 @@ export default function App() {
   const [lunchTime, setLunchTime] = useState<string>(() => {
     return localStorage.getItem("focusblocks_lunch_time") || "13:00";
   });
+  const [motivation, setMotivation] = useState<string>(() => {
+    return localStorage.getItem("focusblocks_motivation") || "Quiero formar una familia y una casa propia";
+  });
 
   useEffect(() => {
     const savedStats = localStorage.getItem("focusblocks_stats");
@@ -61,6 +64,11 @@ export default function App() {
   const handleLunchTimeChange = (newTime: string) => {
     setLunchTime(newTime);
     localStorage.setItem("focusblocks_lunch_time", newTime);
+  };
+
+  const handleMotivationChange = (newMotivation: string) => {
+    setMotivation(newMotivation);
+    localStorage.setItem("focusblocks_motivation", newMotivation);
   };
 
   const saveStats = (newStats: Stats) => {
@@ -182,6 +190,8 @@ export default function App() {
           onWorkdayEndChange={handleWorkdayEndChange}
           lunchTime={lunchTime}
           onLunchTimeChange={handleLunchTimeChange}
+          motivation={motivation}
+          onMotivationChange={handleMotivationChange}
         />
       )}
 
@@ -190,6 +200,7 @@ export default function App() {
           settings={currentSettings}
           onFinish={handleFinishGame}
           onAbandon={handleAbandon}
+          motivation={motivation}
         />
       )}
 

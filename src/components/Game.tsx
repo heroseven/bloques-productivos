@@ -21,9 +21,10 @@ interface GameProps {
   settings: GameSettings;
   onFinish: (results: boolean[], strike: number, actualSeconds: number) => void;
   onAbandon: (actualSeconds: number, results: boolean[], strike: number) => void;
+  motivation: string;
 }
 
-export default function Game({ settings, onFinish, onAbandon }: GameProps) {
+export default function Game({ settings, onFinish, onAbandon, motivation }: GameProps) {
   const [currentBlock, setCurrentBlock] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(settings.duration * 60);
   const [isRunning, setIsRunning] = useState(true);
@@ -335,10 +336,17 @@ export default function Game({ settings, onFinish, onAbandon }: GameProps) {
         </div>
 
         {/* Timer Display */}
-        <div className="relative flex items-center justify-center w-full flex-1 min-h-0">
+        <div className="relative flex flex-col items-center justify-center w-full flex-1 min-h-0">
           <div className="text-[clamp(4rem,35vh,8rem)] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none">
             {formatTime(timeRemaining)}
           </div>
+          {motivation && (
+            <div className="mt-4 px-6 py-3 bg-indigo-50/50 rounded-2xl border border-indigo-100/50 max-w-lg text-center">
+              <p className="text-indigo-900/80 font-medium text-sm sm:text-base">
+                "{motivation}"
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Controls */}
