@@ -26,7 +26,7 @@ export interface VoiceSettings {
   endPhrase: string;
   idlePhrase: string;
   phrases: string[];
-  voiceType: 'female1' | 'female2' | 'female3' | 'male1' | 'male2' | 'male3';
+  voiceType: 'female1' | 'female2' | 'female3' | 'femaleSexy1' | 'femaleSexy2' | 'femaleSexy3' | 'male1' | 'male2' | 'male3';
   frequencyType: 'interval' | 'random';
   intervalSeconds: number;
   randomTimes: number;

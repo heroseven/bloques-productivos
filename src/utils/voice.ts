@@ -44,6 +44,21 @@ export const playPhrase = (phrase: string, voiceType: string) => {
   let selectedVoice;
   
   switch(voiceType) {
+    case 'femaleSexy1': // Cálida/Susurrante
+      selectedVoice = females.find((v) => v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("premium")) || females[0];
+      utterance.pitch = 0.85; // Un poco más grave da un tono más cálido
+      utterance.rate = 0.8;   // Habla más pausada
+      break;
+    case 'femaleSexy2': // Profunda/Intensa
+      selectedVoice = females.length > 1 ? females[1] : females[0];
+      utterance.pitch = 0.7;  // Aún más grave
+      utterance.rate = 0.85;  // Pausado
+      break;
+    case 'femaleSexy3': // Suave/Sensual
+      selectedVoice = females.length > 2 ? females[2] : females[0];
+      utterance.pitch = 1.0;  // Pitch normal
+      utterance.rate = 0.75;  // Velocidad muy tranquila
+      break;
     case 'female1':
       selectedVoice = females.find((v) => v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("premium")) || females[0];
       utterance.pitch = 1.1;

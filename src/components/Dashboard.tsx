@@ -57,7 +57,11 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
     const saved = localStorage.getItem("focusblocks_voice_settings");
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (!parsed.voiceType || !['femaleSexy1', 'femaleSexy2', 'femaleSexy3', 'female1', 'female2', 'female3', 'male1', 'male2', 'male3'].includes(parsed.voiceType)) {
+          parsed.voiceType = 'femaleSexy1';
+        }
+        return parsed;
       } catch (e) {
         console.error("Error parsing voice settings", e);
       }
@@ -73,7 +77,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
         "se trata de fluir",
         "suelta y relájate"
       ],
-      voiceType: 'female1',
+      voiceType: 'femaleSexy1',
       frequencyType: 'interval',
       intervalSeconds: 30,
       randomTimes: 5
@@ -581,6 +585,9 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, voiceType: e.target.value as any })}
                         className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
+                        <option value="femaleSexy1">Mujer Seductora 1 (Cálida/Susurrante)</option>
+                        <option value="femaleSexy2">Mujer Seductora 2 (Profunda/Intensa)</option>
+                        <option value="femaleSexy3">Mujer Seductora 3 (Suave/Sensual)</option>
                         <option value="female1">Mujer 1 (Natural/Suave)</option>
                         <option value="female2">Mujer 2 (Aguda/Dinámica)</option>
                         <option value="female3">Mujer 3 (Grave/Serena)</option>
