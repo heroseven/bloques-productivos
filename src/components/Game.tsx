@@ -268,7 +268,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
   const progressPercentage = (currentBlock / settings.blocksCount) * 100;
 
   return (
-    <div className="w-full min-h-screen overflow-y-auto bg-slate-50 p-2 sm:p-4 flex items-center justify-center">
+    <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 p-2 sm:p-4 flex items-center justify-center">
       {settings.backgroundSound !== "none" && (
         <audio
           ref={audioRef}
@@ -277,7 +277,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
           className="hidden"
         />
       )}
-      <div className="w-full max-w-3xl min-h-[320px] h-full flex-1 max-h-[800px] bg-white rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-y-auto">
+      <div className="w-full min-w-0 max-w-3xl min-h-[320px] h-full flex-1 max-h-[800px] bg-white rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-y-auto">
         
         {/* Header & Progress - Hidden on short screens */}
         <div className="w-full space-y-6 [@media(max-height:500px)]:hidden">
@@ -336,13 +336,13 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
         </div>
 
         {/* Timer Display */}
-        <div className="relative flex flex-col items-center justify-center w-full flex-1 min-h-0">
-          <div className="text-[clamp(4rem,min(35vh,20vw),8rem)] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none text-center">
+        <div className="relative flex flex-col items-center justify-center w-full flex-1 min-h-0 min-w-0">
+          <div className="text-[clamp(3rem,15vw,8rem)] sm:text-[clamp(4rem,18vw,8rem)] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none text-center w-full break-normal overflow-hidden overflow-ellipsis">
             {formatTime(timeRemaining)}
           </div>
           {motivation && (
-            <div className="mt-4 px-6 py-3 bg-indigo-50/50 rounded-2xl border border-indigo-100/50 max-w-lg text-center">
-              <p className="text-indigo-900/80 font-medium text-sm sm:text-base">
+            <div className="mt-4 px-4 sm:px-6 py-3 bg-indigo-50/50 rounded-2xl border border-indigo-100/50 w-full max-w-lg text-center mx-auto overflow-hidden">
+              <p className="text-indigo-900/80 font-medium text-xs sm:text-sm md:text-base break-words">
                 "{motivation}"
               </p>
             </div>
