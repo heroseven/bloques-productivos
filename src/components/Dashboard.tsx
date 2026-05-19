@@ -377,9 +377,10 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
             })()}
           </div>
         </div>
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+        <div className="h-64 w-full relative">
+          <div className="absolute inset-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={chartData}>
               <XAxis 
                 dataKey="name" 
                 axisLine={false} 
@@ -409,6 +410,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               <Bar dataKey="juegos" name="Juegos" fill="#38bdf8" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
