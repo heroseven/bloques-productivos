@@ -268,7 +268,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
   const progressPercentage = (currentBlock / settings.blocksCount) * 100;
 
   return (
-    <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 p-2 sm:p-4 flex items-center justify-center">
+    <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 dark:bg-slate-800/50 p-2 sm:p-4 flex items-center justify-center">
       {settings.backgroundSound !== "none" && (
         <audio
           ref={audioRef}
@@ -277,31 +277,31 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
           className="hidden"
         />
       )}
-      <div className="w-full min-w-0 max-w-3xl min-h-[320px] h-full flex-1 max-h-[800px] bg-white rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-y-auto">
+      <div className="w-full min-w-0 max-w-3xl min-h-[320px] h-full flex-1 max-h-[800px] bg-white dark:bg-slate-800 rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-y-auto">
         
         {/* Header & Progress - Hidden on short screens */}
         <div className="w-full space-y-6 [@media(max-height:500px)]:hidden">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 text-center">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 text-center">
               Serie en progreso
             </h2>
-            <div className="text-sm font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-full whitespace-nowrap">
+            <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 rounded-full whitespace-nowrap">
               Bloque {currentBlock + 1} de {settings.blocksCount}
             </div>
           </div>
           
-          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-sm font-medium text-slate-500">
-            <div className="bg-slate-100 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-sm font-medium text-slate-500 dark:text-slate-400">
+            <div className="bg-slate-100 dark:bg-slate-800 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
               Planeado: {settings.duration * settings.blocksCount}:00
             </div>
-            <div className="bg-slate-100 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
+            <div className="bg-slate-100 dark:bg-slate-800 px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
               Real: {formatTime(actualSeconds)}
             </div>
           </div>
 
-          <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+          <div className="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
             <div
               className="bg-indigo-500 h-full transition-all duration-500 ease-out"
               style={{ width: `${progressPercentage}%` }}
@@ -331,18 +331,18 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
                 />
               );
             }
-            return <Circle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-slate-200" />;
+            return <Circle key={idx} className="w-6 h-6 sm:w-8 sm:h-8 text-slate-200 dark:text-slate-700" />;
           })}
         </div>
 
         {/* Timer Display */}
         <div className="relative flex flex-col items-center justify-center w-full flex-1 min-h-0 min-w-0">
-          <div className="text-[clamp(3rem,15vw,8rem)] sm:text-[clamp(4rem,18vw,8rem)] font-mono font-bold text-slate-800 tracking-tighter tabular-nums leading-none text-center w-full break-normal overflow-hidden overflow-ellipsis">
+          <div className="text-[clamp(3rem,15vw,8rem)] sm:text-[clamp(4rem,18vw,8rem)] font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none text-center w-full break-normal overflow-hidden overflow-ellipsis">
             {formatTime(timeRemaining)}
           </div>
           {motivation && (
-            <div className="mt-4 px-4 sm:px-6 py-3 bg-indigo-50/50 rounded-2xl border border-indigo-100/50 w-full max-w-lg text-center mx-auto overflow-hidden">
-              <p className="text-indigo-900/80 font-medium text-xs sm:text-sm md:text-base break-words">
+            <div className="mt-4 px-4 sm:px-6 py-3 bg-indigo-50/50 dark:bg-indigo-900/30 rounded-2xl border border-indigo-100/50 dark:border-indigo-800/30 w-full max-w-lg text-center mx-auto overflow-hidden">
+              <p className="text-indigo-900/80 dark:text-indigo-100/80 font-medium text-xs sm:text-sm md:text-base break-words">
                 "{motivation}"
               </p>
             </div>
@@ -368,7 +368,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
 
           <button
             onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
-            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
             title="Abandonar Serie"
           >
             <Square className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />

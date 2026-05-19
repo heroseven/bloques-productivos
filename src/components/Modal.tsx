@@ -85,20 +85,20 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl overflow-y-auto max-h-[95vh] relative flex flex-col"
+            className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl overflow-y-auto max-h-[95vh] relative flex flex-col"
           >
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shrink-0" />
 
             <div className="text-center space-y-4 sm:space-y-6 my-auto">
-              <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-indigo-50 rounded-full flex items-center justify-center mb-2 sm:mb-6 shrink-0 hidden sm:flex [@media(min-height:500px)]:flex">
+              <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 bg-indigo-50 dark:bg-indigo-900/40 rounded-full flex items-center justify-center mb-2 sm:mb-6 shrink-0 hidden sm:flex [@media(min-height:500px)]:flex">
                 <span className="text-3xl sm:text-4xl">✨</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
                 ¡Tiempo Terminado!
               </h2>
 
-              <p className="text-base sm:text-lg text-slate-600 font-medium italic px-2 sm:px-4">
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium italic px-2 sm:px-4">
                 "{message}"
               </p>
 
@@ -113,7 +113,7 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
 
                 <button
                   onClick={() => onComplete(false)}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-2xl py-3 sm:py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg"
+                  className="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-2xl py-3 sm:py-4 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 sm:gap-3 text-base sm:text-lg"
                 >
                   <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                   No, no cumplí

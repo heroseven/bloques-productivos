@@ -32,27 +32,27 @@ export default function Summary({
 
   return (
     <div className="max-w-2xl mx-auto p-6 min-h-screen flex flex-col justify-center">
-      <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 text-center space-y-8">
-        <div className="mx-auto w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-xl border border-slate-100 dark:border-slate-700 text-center space-y-8">
+        <div className="mx-auto w-24 h-24 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-6">
           <Trophy className="w-12 h-12 text-indigo-500" />
         </div>
 
-        <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
+        <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
           ¡Serie Terminada!
         </h1>
 
-        <p className="text-lg text-slate-600">
+        <p className="text-lg text-slate-600 dark:text-slate-300">
           Has completado una serie de {settings.blocksCount} bloques de{" "}
           {settings.duration} minutos.
         </p>
 
-        <div className="grid grid-cols-3 gap-4 py-6 border-y border-slate-100">
+        <div className="grid grid-cols-3 gap-4 py-6 border-y border-slate-100 dark:border-slate-700">
           <div className="space-y-2">
             <div className="flex justify-center text-emerald-500">
               <CheckCircle className="w-8 h-8" />
             </div>
-            <div className="text-3xl font-bold text-slate-800">{completed}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase">
+            <div className="text-3xl font-bold text-slate-800 dark:text-slate-100">{completed}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">
               Cumplidos
             </div>
           </div>
@@ -61,8 +61,8 @@ export default function Summary({
             <div className="flex justify-center text-rose-500">
               <XCircle className="w-8 h-8" />
             </div>
-            <div className="text-3xl font-bold text-slate-800">{failed}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase">
+            <div className="text-3xl font-bold text-slate-800 dark:text-slate-100">{failed}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">
               Fallados
             </div>
           </div>
@@ -71,16 +71,16 @@ export default function Summary({
             <div className="flex justify-center text-amber-500">
               <Trophy className="w-8 h-8" />
             </div>
-            <div className="text-3xl font-bold text-slate-800">{strike}</div>
-            <div className="text-xs font-medium text-slate-500 uppercase">
+            <div className="text-3xl font-bold text-slate-800 dark:text-slate-100">{strike}</div>
+            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">
               Mejor Strike
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-50 rounded-2xl p-6 flex flex-col gap-4">
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <span className="text-slate-600 font-medium text-lg">
+            <span className="text-slate-600 dark:text-slate-300 font-medium text-lg">
               Tasa de Éxito
             </span>
             <span className="text-3xl font-bold text-indigo-600">
@@ -91,15 +91,15 @@ export default function Summary({
           <div className="h-px bg-slate-200 w-full"></div>
           
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-slate-600 font-medium text-lg">
+            <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 font-medium text-lg">
               <Clock className="w-5 h-5" />
               Tiempo Total
             </div>
             <div className="text-right">
-              <div className="text-xl font-bold text-slate-800">
+              <div className="text-xl font-bold text-slate-800 dark:text-slate-100">
                 {formatTime(actualSeconds)}
               </div>
-              <div className="text-sm text-slate-500">
+              <div className="text-sm text-slate-500 dark:text-slate-400">
                 vs {formatTime(plannedSeconds)} planeado
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function Summary({
         <div className="flex gap-4 pt-4">
           <button
             onClick={onHome}
-            className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl py-4 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl py-4 transition-colors flex items-center justify-center gap-2"
           >
             <Home className="w-5 h-5" />
             Inicio

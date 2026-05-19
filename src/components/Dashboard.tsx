@@ -292,10 +292,10 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <header className="text-center space-y-4">
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-slate-800 tracking-tight">
+          <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-100 tracking-tight">
             FocusBlocks
           </h1>
-          <p className="text-slate-500 text-lg">
+          <p className="text-slate-500 dark:text-slate-400 text-lg">
             Juego de productividad por bloques de tiempo
           </p>
         </div>
@@ -305,29 +305,29 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
             value={motivation}
             onChange={(e) => onMotivationChange(e.target.value)}
             placeholder="¿Cuál es tu motivación?"
-            className="w-full text-center bg-transparent border-b-2 border-slate-200 hover:border-indigo-300 focus:border-indigo-500 px-4 py-2 text-slate-600 font-medium focus:outline-none transition-colors placeholder:text-slate-300"
+            className="w-full text-center bg-transparent border-b-2 border-slate-200 dark:border-slate-600 hover:border-indigo-300 focus:border-indigo-500 px-4 py-2 text-slate-600 dark:text-slate-300 font-medium focus:outline-none transition-colors placeholder:text-slate-300"
           />
         </div>
       </header>
 
       {/* Evolution Chart */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <BarChart2 className="w-5 h-5 text-indigo-500" />
               Evolución
             </h2>
-            <div className="flex bg-slate-100 rounded-lg p-1">
+            <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
               <button
                 onClick={() => { setChartView('week'); setChartOffset(0); }}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'week' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'week' ? 'bg-white dark:bg-slate-800 text-indigo-600 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 dark:text-slate-200'}`}
               >
                 Semana
               </button>
               <button
                 onClick={() => { setChartView('month'); setChartOffset(0); }}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'month' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${chartView === 'month' ? 'bg-white dark:bg-slate-800 text-indigo-600 shadow-sm' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 dark:text-slate-200'}`}
               >
                 Mes
               </button>
@@ -335,23 +335,23 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1 border border-slate-100">
+            <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-1 border border-slate-100 dark:border-slate-700">
               <button 
                 onClick={() => setChartOffset(prev => prev + 1)}
-                className="p-1 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                className="p-1 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-md transition-colors"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <div className="flex items-center gap-1.5 px-2 min-w-[120px] justify-center">
-                <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-sm font-medium text-slate-600">
+                <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   {getChartLabel()}
                 </span>
               </div>
               <button 
                 onClick={() => setChartOffset(prev => Math.max(0, prev - 1))}
                 disabled={chartOffset === 0}
-                className={`p-1 rounded-md transition-colors ${chartOffset === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'}`}
+                className={`p-1 rounded-md transition-colors ${chartOffset === 0 ? 'text-slate-300 dark:text-slate-600 cursor-not-allowed' : 'text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30'}`}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -362,10 +362,10 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               if (trend === 'neutral' && percentage === 0) return null;
               
               return (
-                <div className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full ${
-                  trend === 'up' ? 'bg-emerald-50 text-emerald-600' :
-                  trend === 'down' ? 'bg-rose-50 text-rose-600' :
-                  'bg-slate-50 text-slate-600'
+                <div className={`flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-full border border-transparent ${
+                  trend === 'up' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 dark:border-emerald-800/30' :
+                  trend === 'down' ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 dark:border-rose-800/30' :
+                  'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 dark:border-slate-700'
                 }`}>
                   {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : 
                    trend === 'down' ? <TrendingDown className="w-4 h-4" /> : 
@@ -415,9 +415,9 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
       </div>
 
       {/* New Game Setup */}
-      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-100 dark:border-slate-700">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <h2 className="text-2xl font-semibold text-slate-800 flex items-center gap-2">
+          <h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
             <Play className="w-6 h-6 text-indigo-500" />
             Nueva Serie
           </h2>
@@ -429,7 +429,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
             <select
               value={selectedTemplate}
               onChange={handleTemplateChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg font-medium"
+              className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-4 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg font-medium"
             >
               {TEMPLATES.map((t) => (
                 <option key={t.id} value={t.id}>
@@ -451,7 +451,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
         {/* Advanced Config Toggle */}
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="text-slate-500 hover:text-indigo-600 font-medium flex items-center justify-center gap-1 transition-colors text-sm w-full mt-4 py-2"
+          className="text-slate-500 dark:text-slate-400 hover:text-indigo-600 font-medium flex items-center justify-center gap-1 transition-colors text-sm w-full mt-4 py-2"
         >
           {showAdvanced ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           {showAdvanced ? "Ocultar configuración avanzada" : "Mostrar configuración avanzada"}
@@ -459,10 +459,10 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
 
         {/* Advanced Config Content */}
         {showAdvanced && (
-          <div className="mt-6 pt-6 border-t border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-600">
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   Duración por bloque
                 </label>
                 <select
@@ -471,7 +471,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                     setDuration(Number(e.target.value));
                     setSelectedTemplate("custom");
                   }}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   {[1, 3, 5, 10, 15, 20, 25].map((min) => (
                     <option key={min} value={min}>
@@ -482,7 +482,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-600">
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   Cantidad de bloques
                 </label>
                 <input
@@ -494,18 +494,18 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                     setBlocksCount(Number(e.target.value));
                     setSelectedTemplate("custom");
                   }}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-600">
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   Sonido de fondo
                 </label>
                 <select
                   value={backgroundSound}
                   onChange={(e) => setBackgroundSound(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="none">Sin sonido</option>
                   <option value="rain">Lluvia relajante</option>
@@ -516,9 +516,9 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
             </div>
 
             {/* Voice Settings Section */}
-            <div className="mb-2 border-t border-slate-100 pt-6">
+            <div className="mb-2 border-t border-slate-100 dark:border-slate-700 pt-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-slate-800">Voz Motivacional</h3>
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Voz Motivacional</h3>
                 <label className="flex items-center gap-3 cursor-pointer">
                   <div className="relative">
                     <input
@@ -529,63 +529,63 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                     />
                     <div
                       className={`block w-14 h-8 rounded-full transition-colors ${
-                        voiceSettings.enabled ? "bg-indigo-500" : "bg-slate-300"
+                        voiceSettings.enabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"
                       }`}
                     ></div>
                     <div
-                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${
+                      className={`absolute left-1 top-1 bg-white dark:bg-slate-200 w-6 h-6 rounded-full transition-transform ${
                         voiceSettings.enabled ? "transform translate-x-6" : ""
                       }`}
                     ></div>
                   </div>
-                  <span className="text-slate-700 font-medium">
+                  <span className="text-slate-700 dark:text-slate-200 font-medium">
                     {voiceSettings.enabled ? "Activada" : "Desactivada"}
                   </span>
                 </label>
               </div>
 
               {voiceSettings.enabled && (
-                <div className="grid md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <div className="grid md:grid-cols-2 gap-6 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-600">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600">Frase de inicio de bloque</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Frase de inicio de bloque</label>
                       <input
                         type="text"
                         value={voiceSettings.startPhrase}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, startPhrase: e.target.value })}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         placeholder="Ej: ¡Comenzó el juego!"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600">Frase de fin de bloque</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Frase de fin de bloque</label>
                       <input
                         type="text"
                         value={voiceSettings.endPhrase || "Bloque terminado, prepárate para el siguiente."}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, endPhrase: e.target.value })}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         placeholder="Ej: Bloque terminado"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600">Recordatorio entre bloques (cada min)</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Recordatorio entre bloques (cada min)</label>
                       <input
                         type="text"
                         value={voiceSettings.idlePhrase || "El reto de enfoque continúa, inicia el siguiente bloque."}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, idlePhrase: e.target.value })}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         placeholder="Ej: El reto continúa"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600">Tipo de Voz</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Tipo de Voz</label>
                       <select
                         value={voiceSettings.voiceType}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, voiceType: e.target.value as any })}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
                         <option value="femaleSexy1">Mujer Seductora 1 (Cálida/Susurrante)</option>
                         <option value="femaleSexy2">Mujer Seductora 2 (Profunda/Intensa)</option>
@@ -600,11 +600,11 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600">Frecuencia</label>
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Frecuencia</label>
                       <select
                         value={voiceSettings.frequencyType}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, frequencyType: e.target.value as 'interval' | 'random' })}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
                         <option value="interval">Intervalo regular</option>
                         <option value="random">Aleatorio por bloque</option>
@@ -613,11 +613,11 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
 
                     {voiceSettings.frequencyType === 'interval' ? (
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-600">Cada cuánto tiempo</label>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Cada cuánto tiempo</label>
                         <select
                           value={voiceSettings.intervalSeconds}
                           onChange={(e) => setVoiceSettings({ ...voiceSettings, intervalSeconds: Number(e.target.value) })}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                           <option value={30}>Cada 30 segundos</option>
                           <option value={45}>Cada 45 segundos</option>
@@ -626,11 +626,11 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-600">Veces por bloque</label>
+                        <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Veces por bloque</label>
                         <select
                           value={voiceSettings.randomTimes}
                           onChange={(e) => setVoiceSettings({ ...voiceSettings, randomTimes: Number(e.target.value) })}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
                           <option value={3}>3 veces</option>
                           <option value={5}>5 veces</option>
@@ -641,11 +641,11 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                   </div>
 
                   <div className="space-y-2 flex flex-col">
-                    <label className="text-sm font-medium text-slate-600">Frases (una por línea)</label>
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">Frases (una por línea)</label>
                     <textarea
                       value={voiceSettings.phrases.join('\n')}
                       onChange={(e) => setVoiceSettings({ ...voiceSettings, phrases: e.target.value.split('\n') })}
-                      className="w-full flex-1 min-h-[120px] bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                      className="w-full flex-1 min-h-[120px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                       placeholder="Escribe una frase por línea..."
                     />
                     <button
@@ -656,7 +656,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                           playPhrase(randomPhrase, voiceSettings.voiceType);
                         }
                       }}
-                      className="w-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-medium rounded-xl py-3 transition-colors flex items-center justify-center gap-2 mt-2"
+                      className="w-full bg-indigo-100 dark:bg-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-medium rounded-xl py-3 transition-colors flex items-center justify-center gap-2 mt-2"
                     >
                       <Play className="w-4 h-4 fill-current" />
                       Probar Voz
@@ -696,27 +696,27 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
           title="Mejor Strike"
           value={stats.bestStrike}
         />
-        <div className="col-span-2 md:col-span-5 bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between">
-          <span className="text-slate-600 font-medium">Promedio de Éxito</span>
-          <span className="text-2xl font-bold text-slate-800">
+        <div className="col-span-2 md:col-span-5 bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
+          <span className="text-slate-600 dark:text-slate-300 font-medium">Promedio de Éxito</span>
+          <span className="text-2xl font-bold text-slate-800 dark:text-slate-100">
             {successRate}%
           </span>
         </div>
       </div>
 
       {/* General Settings */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100">
-        <h2 className="text-xl font-semibold text-slate-800 mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700">
+        <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
           <Moon className="w-5 h-5 text-indigo-500" />
           Configuración General
         </h2>
         <div className="space-y-6 max-w-md">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Hora de almuerzo
               </label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Hora a la que tomas tu descanso para comer.
               </p>
             </div>
@@ -724,16 +724,16 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               type="time"
               value={lunchTime}
               onChange={(e) => onLunchTimeChange(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Fin de jornada
               </label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Hora a la que terminas de trabajar.
               </p>
             </div>
@@ -741,16 +741,16 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               type="time"
               value={workdayEnd}
               onChange={(e) => onWorkdayEndChange(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <label className="text-sm font-medium text-slate-700">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 Hora de dormir
               </label>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Te avisaremos cuando sea hora de descansar.
               </p>
             </div>
@@ -758,7 +758,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               type="time"
               value={bedtime}
               onChange={(e) => onBedtimeChange(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -767,8 +767,8 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
       {/* History */}
       {stats.history.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
-            <List className="w-5 h-5 text-slate-500" />
+          <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <List className="w-5 h-5 text-slate-500 dark:text-slate-400" />
             Historial Reciente
           </h3>
           <div className="space-y-3">
@@ -782,13 +782,13 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               return (
                 <div
                   key={game.id}
-                  className={`bg-white rounded-2xl p-4 shadow-sm border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
-                    game.status === 'abandoned' ? 'border-orange-200 bg-orange-50/30' : 'border-slate-100'
+                  className={`bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                    game.status === 'abandoned' ? 'border-orange-200 bg-orange-50/30' : 'border-slate-100 dark:border-slate-700'
                   }`}
                 >
                   <div>
                     <div className="flex items-center gap-2">
-                      <div className="text-sm text-slate-500">
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
                         {new Date(game.date).toLocaleDateString()}
                       </div>
                       {game.status === 'abandoned' && (
@@ -797,12 +797,12 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                         </span>
                       )}
                     </div>
-                    <div className="font-medium text-slate-800">
+                    <div className="font-medium text-slate-800 dark:text-slate-100">
                       {game.durationPerBlock}m x {game.totalBlocks} bloques
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-slate-600 font-medium bg-slate-100 px-2 py-1 rounded-lg" title="Tiempo Real vs Planeado">
+                    <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300 font-medium bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-lg" title="Tiempo Real vs Planeado">
                       <Clock className="w-4 h-4" /> 
                       {Math.floor(actualSeconds / 60)}m ({diffStr})
                     </div>
@@ -833,11 +833,11 @@ function StatCard({
   value: number;
 }) {
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-2">
-      <div className="p-3 bg-slate-50 rounded-full">{icon}</div>
+    <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center text-center space-y-2">
+      <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-full">{icon}</div>
       <div>
-        <div className="text-2xl font-bold text-slate-800">{value}</div>
-        <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">{value}</div>
+        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           {title}
         </div>
       </div>

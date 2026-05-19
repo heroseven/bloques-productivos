@@ -4,6 +4,7 @@ import Dashboard from "./components/Dashboard";
 import Game from "./components/Game";
 import Summary from "./components/Summary";
 import BedtimeCountdown from "./components/BedtimeCountdown";
+import { Moon, Sun } from "lucide-react";
 
 type View = "dashboard" | "game" | "summary";
 
@@ -19,6 +20,9 @@ const DEFAULT_STATS: Stats = {
 export default function App() {
   const [view, setView] = useState<View>("dashboard");
   const [stats, setStats] = useState<Stats>(DEFAULT_STATS);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    return localStorage.getItem("focusblocks_dark_mode") === "true";
+  });
   const [currentSettings, setCurrentSettings] = useState<GameSettings | null>(
     null,
   );
@@ -50,6 +54,20 @@ export default function App() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem("focusblocks_dark_mode", isDarkMode.toString());
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+  };
+
 
   const handleBedtimeChange = (newTime: string) => {
     setBedtime(newTime);
@@ -177,7 +195,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-indigo-100 overflow-x-hidden w-full min-w-0">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900 overflow-x-hidden w-full min-w-0 transition-colors duration-300">
+      <button 
+        onClick={toggleDarkMode}
+        className="fixed top-3 left-3 sm:top-6 sm:left-6 z-50 p-2 sm:p-3 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+        title="Toggle dark mode"
+      >
+        {isDarkMode ? <Sun className="w-5 h-5 sm:w-6 sm:h-6" /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6" />}
+      </button>
+
       <BedtimeCountdown bedtime={bedtime} workdayEnd={workdayEnd} lunchTime={lunchTime} />
       
       {view === "dashboard" && (
