@@ -292,48 +292,70 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
             className="hidden"
           />
         )}
-        <div className="flex items-center gap-3">
-          <div className="text-3xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none">
-            {formatTime(timeRemaining)}
-          </div>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setIsRunning(!isRunning)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
-                isRunning
-                  ? "bg-amber-500 hover:bg-amber-600 text-white"
-                  : "bg-indigo-600 hover:bg-indigo-700 text-white"
-              }`}
-              title={isRunning ? "Pausar" : "Reanudar"}
-            >
-              {isRunning ? (
-                <Pause className="w-4 h-4 fill-current" />
-              ) : (
-                <Play className="w-4 h-4 fill-current ml-0.5" />
-              )}
-            </button>
-            <button
-              onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
-              className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
-              title="Abandonar Serie"
-            >
-              <Square className="w-3 h-3 fill-current" />
-            </button>
-          </div>
-        </div>
         
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden sm:inline-block">
-            {currentBlock + 1}/{settings.blocksCount}
-          </span>
-          <div className="flex gap-1 shrink-0">
-            {results.map((_, idx) => (
-               <div key={idx} className={`w-2 h-2 rounded-full ${idx < currentBlock ? (results[idx] ? 'bg-emerald-500' : 'bg-rose-500') : idx === currentBlock ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} />
-            ))}
+        {showModal ? (
+          <div className="w-full flex items-center justify-between gap-2">
+            <span className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">¿Cumpliste?</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => handleBlockComplete(true)}
+                className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full px-4 py-1.5 text-xs font-bold flex items-center gap-1 transition-transform hover:scale-105 shadow-sm"
+              >
+                <CheckCircle className="w-4 h-4" /> Sí
+              </button>
+              <button
+                onClick={() => handleBlockComplete(false)}
+                className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-full px-4 py-1.5 text-xs font-bold flex items-center gap-1 transition-transform hover:scale-105 shadow-sm"
+              >
+                <XCircle className="w-4 h-4" /> No
+              </button>
+            </div>
           </div>
-        </div>
-        
-        <Modal isOpen={showModal} onComplete={handleBlockComplete} />
+        ) : (
+          <>
+            <div className="flex items-center gap-3">
+              <div className="text-3xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none">
+                {formatTime(timeRemaining)}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setIsRunning(!isRunning)}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
+                    isRunning
+                      ? "bg-amber-500 hover:bg-amber-600 text-white"
+                      : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                  }`}
+                  title={isRunning ? "Pausar" : "Reanudar"}
+                >
+                  {isRunning ? (
+                    <Pause className="w-4 h-4 fill-current" />
+                  ) : (
+                    <Play className="w-4 h-4 fill-current ml-0.5" />
+                  )}
+                </button>
+                <button
+                  onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
+                  className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
+                  title="Abandonar Serie"
+                >
+                  <Square className="w-3 h-3 fill-current" />
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden sm:inline-block">
+                {currentBlock + 1}/{settings.blocksCount}
+              </span>
+              <div className="flex gap-1 shrink-0">
+                {results.map((_, idx) => (
+                   <div key={idx} className={`w-2 h-2 rounded-full ${idx < currentBlock ? (results[idx] ? 'bg-emerald-500' : 'bg-rose-500') : idx === currentBlock ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        <Modal isOpen={showModal} onComplete={handleBlockComplete} isCompact={true} />
       </div>
     );
   }

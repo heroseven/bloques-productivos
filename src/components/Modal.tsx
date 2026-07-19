@@ -6,9 +6,10 @@ import { INSPIRATIONAL_MESSAGES } from "../constants";
 interface ModalProps {
   isOpen: boolean;
   onComplete: (success: boolean) => void;
+  isCompact?: boolean;
 }
 
-export default function Modal({ isOpen, onComplete }: ModalProps) {
+export default function Modal({ isOpen, onComplete, isCompact }: ModalProps) {
   const message = React.useMemo(() => {
     return INSPIRATIONAL_MESSAGES[
       Math.floor(Math.random() * INSPIRATIONAL_MESSAGES.length)
@@ -76,6 +77,8 @@ export default function Modal({ isOpen, onComplete }: ModalProps) {
       }
     };
   }, [isOpen]);
+
+  if (isCompact) return null;
 
   return (
     <AnimatePresence>
