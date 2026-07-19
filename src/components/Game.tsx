@@ -141,24 +141,34 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
     return `Iniciando el ${ordinal} bloque, sigue así.`;
   };
 
+  const hasStartedBlockRef = useRef<number>(-1);
+
   // Block Start Logic
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     if (isRunning && timeRemaining === settings.duration * 60) {
-      playStartSound();
-      if (settings.voiceSettings.enabled) {
-        const phrase = getBlockStartPhrase(currentBlock, settings.blocksCount, settings.voiceSettings.startPhrase);
-        if (phrase.trim() !== "") {
-          setTimeout(() => {
-            playPhrase(phrase, settings.voiceSettings.voiceType);
-          }, 1000);
+      if (hasStartedBlockRef.current !== currentBlock) {
+        hasStartedBlockRef.current = currentBlock;
+        playStartSound();
+        if (settings.voiceSettings.enabled) {
+          const phrase = getBlockStartPhrase(currentBlock, settings.blocksCount, settings.voiceSettings.startPhrase);
+          if (phrase.trim() !== "") {
+            timeout = setTimeout(() => {
+              playPhrase(phrase, settings.voiceSettings.voiceType);
+            }, 1000);
+          }
         }
       }
     }
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
   }, [isRunning, timeRemaining, currentBlock, settings.duration, settings.blocksCount, settings.voiceSettings]);
 
   // Timer logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
+    let endTimeout: NodeJS.Timeout;
     if (isRunning && timeRemaining > 0) {
       interval = setInterval(() => {
         setTimeRemaining((prev) => {
@@ -207,12 +217,15 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
       }
 
       if (settings.voiceSettings.enabled && settings.voiceSettings.endPhrase?.trim() !== "") {
-        setTimeout(() => {
+        endTimeout = setTimeout(() => {
           playPhrase(settings.voiceSettings.endPhrase, settings.voiceSettings.voiceType);
         }, 1000);
       }
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+      if (endTimeout) clearTimeout(endTimeout);
+    };
   }, [isRunning, timeRemaining, randomTriggers, settings]);
 
   // Idle reminder logic
@@ -270,7 +283,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
 
   if (isCompact) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] relative">
+      <div className="w-full flex items-center justify-between gap-4">
         {settings.backgroundSound !== "none" && (
           <audio
             ref={audioRef}
@@ -279,14 +292,14 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
             className="hidden"
           />
         )}
-        <div className="flex items-center gap-4">
-          <div className="text-4xl sm:text-5xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none">
+        <div className="flex items-center gap-3">
+          <div className="text-3xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none">
             {formatTime(timeRemaining)}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setIsRunning(!isRunning)}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
                 isRunning
                   ? "bg-amber-500 hover:bg-amber-600 text-white"
                   : "bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -301,7 +314,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
             </button>
             <button
               onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
-              className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
+              className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
               title="Abandonar Serie"
             >
               <Square className="w-3 h-3 fill-current" />
@@ -309,9 +322,11 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
           </div>
         </div>
         
-        <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-3 flex items-center gap-2">
-          <span>{currentBlock + 1} / {settings.blocksCount}</span>
-          <div className="flex gap-1">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-600 dark:text-slate-300 hidden sm:inline-block">
+            {currentBlock + 1}/{settings.blocksCount}
+          </span>
+          <div className="flex gap-1 shrink-0">
             {results.map((_, idx) => (
                <div key={idx} className={`w-2 h-2 rounded-full ${idx < currentBlock ? (results[idx] ? 'bg-emerald-500' : 'bg-rose-500') : idx === currentBlock ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} />
             ))}

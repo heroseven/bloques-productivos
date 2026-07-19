@@ -298,16 +298,21 @@ export default function Dashboard({
 
   if (isCompact) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] p-4">
-        <button
-          onClick={handleStart}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full w-16 h-16 flex items-center justify-center transition-transform hover:scale-105 shadow-lg shadow-indigo-500/30"
-          title="Empezar Nueva Serie"
-        >
-          <Play className="w-8 h-8 ml-1 fill-current" />
-        </button>
-        <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
-          {blocksCount} bloques de {duration} min
+      <div className="w-full flex items-center justify-center gap-4">
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis hidden sm:block">
+          FocusBlocks
+        </h1>
+        <div className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-full pr-4 pl-1 py-1 shadow-sm border border-slate-200 dark:border-slate-700">
+          <button
+            onClick={handleStart}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center transition-transform hover:scale-105 shadow-md shadow-indigo-500/30 shrink-0"
+            title="Empezar Nueva Serie"
+          >
+            <Play className="w-4 h-4 ml-0.5 fill-current" />
+          </button>
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
+            {blocksCount} x {duration}m
+          </div>
         </div>
       </div>
     );

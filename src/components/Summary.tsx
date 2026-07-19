@@ -34,23 +34,23 @@ export default function Summary({
 
   if (isCompact) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] p-2">
-        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Resumen</h2>
-        <div className="flex gap-4">
-          <div className="text-center">
-            <span className="text-2xl font-bold text-emerald-500">{completed}</span>
+      <div className="w-full flex items-center justify-between gap-4">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 hidden sm:block">Resumen</h2>
+        <div className="flex gap-4 items-center">
+          <div className="text-center flex items-center gap-1">
+            <span className="text-xl font-bold text-emerald-500">{completed}</span>
             <span className="text-xs text-slate-500 block uppercase">Bien</span>
           </div>
-          <div className="text-center">
-            <span className="text-2xl font-bold text-rose-500">{failed}</span>
+          <div className="text-center flex items-center gap-1">
+            <span className="text-xl font-bold text-rose-500">{failed}</span>
             <span className="text-xs text-slate-500 block uppercase">Mal</span>
           </div>
         </div>
-        <div className="flex gap-2 mt-4">
-           <button onClick={onRestart} className="p-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200">
+        <div className="flex gap-2">
+           <button onClick={onRestart} className="p-2 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900 transition-colors" title="Repetir Serie">
              <RotateCcw className="w-5 h-5" />
            </button>
-           <button onClick={onHome} className="p-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">
+           <button onClick={onHome} className="p-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors" title="Volver al Inicio">
              <Home className="w-5 h-5" />
            </button>
         </div>
