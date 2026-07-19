@@ -28,7 +28,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Stats, GameSettings, Template, VoiceSettings } from "../types";
+import { Stats, GameSettings, Template, VoiceSettings, ReminderSettings } from "../types";
 import { TEMPLATES } from "../constants";
 import { playPhrase } from "../utils/voice";
 
@@ -43,9 +43,15 @@ interface DashboardProps {
   onLunchTimeChange: (time: string) => void;
   motivation: string;
   onMotivationChange: (text: string) => void;
+  reminderSettings: ReminderSettings;
+  onReminderSettingsChange: (settings: ReminderSettings) => void;
 }
 
-export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange, workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange, motivation, onMotivationChange }: DashboardProps) {
+export default function Dashboard({ 
+  stats, onStartGame, bedtime, onBedtimeChange, 
+  workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange, 
+  motivation, onMotivationChange, reminderSettings, onReminderSettingsChange 
+}: DashboardProps) {
   const [duration, setDuration] = useState<number>(3);
   const [blocksCount, setBlocksCount] = useState<number>(3);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("default");
@@ -58,8 +64,8 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (!parsed.voiceType || !['femaleSexy1', 'femaleSexy2', 'femaleSexy3', 'female1', 'female2', 'female3', 'male1', 'male2', 'male3'].includes(parsed.voiceType)) {
-          parsed.voiceType = 'femaleSexy1';
+        if (!parsed.voiceType || !['es-ES-Journey-F', 'es-ES-Journey-D', 'es-PE-AlexNeural', 'es-PE-CamilaNeural', 'femaleSexy1', 'femaleSexy2', 'femaleSexy3', 'female1', 'female2', 'female3', 'male1', 'male2', 'male3'].includes(parsed.voiceType)) {
+          parsed.voiceType = 'es-ES-Journey-F';
         }
         return parsed;
       } catch (e) {
@@ -77,7 +83,7 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
         "se trata de fluir",
         "suelta y relájate"
       ],
-      voiceType: 'femaleSexy1',
+      voiceType: 'es-ES-Journey-F',
       frequencyType: 'interval',
       intervalSeconds: 30,
       randomTimes: 5
@@ -587,6 +593,10 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, voiceType: e.target.value as any })}
                         className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       >
+                        <option value="es-ES-Journey-F">Chirp 3 HD - España (Mujer)</option>
+                        <option value="es-ES-Journey-D">Chirp 3 HD - España (Hombre)</option>
+                        <option value="es-PE-AlexNeural">Microsoft Alex (Perú) - Masculino</option>
+                        <option value="es-PE-CamilaNeural">Microsoft Camila (Perú) - Femenina</option>
                         <option value="femaleSexy1">Mujer Seductora 1 (Cálida/Susurrante)</option>
                         <option value="femaleSexy2">Mujer Seductora 2 (Profunda/Intensa)</option>
                         <option value="femaleSexy3">Mujer Seductora 3 (Suave/Sensual)</option>
@@ -761,6 +771,85 @@ export default function Dashboard({ stats, onStartGame, bedtime, onBedtimeChange
               className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
+        </div>
+
+        {/* Recordatorio Fijo/Permanente */}
+        <div className="mt-10 border-t border-slate-200 dark:border-slate-700 pt-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-indigo-500" />
+              Recordatorio Permanente
+            </h3>
+            <div
+              className="relative inline-block w-14 align-middle select-none cursor-pointer"
+              onClick={() => onReminderSettingsChange({ ...reminderSettings, enabled: !reminderSettings.enabled })}
+            >
+              <div
+                className={`block w-14 h-8 rounded-full transition-colors ${
+                  reminderSettings.enabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"
+                }`}
+              ></div>
+              <div
+                className={`absolute left-1 top-1 bg-white dark:bg-slate-200 w-6 h-6 rounded-full transition-transform ${
+                  reminderSettings.enabled ? "transform translate-x-6" : ""
+                }`}
+              ></div>
+            </div>
+          </div>
+
+          {reminderSettings.enabled && (
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1 block">Frase a recordar</label>
+                <textarea
+                  value={reminderSettings.phrase}
+                  onChange={(e) => onReminderSettingsChange({ ...reminderSettings, phrase: e.target.value })}
+                  className="w-full min-h-[80px] bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1 block">Voz</label>
+                  <select
+                    value={reminderSettings.voiceType}
+                    onChange={(e) => onReminderSettingsChange({ ...reminderSettings, voiceType: e.target.value as any })}
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="es-ES-Journey-F">Chirp 3 HD - España (Mujer)</option>
+                    <option value="es-ES-Journey-D">Chirp 3 HD - España (Hombre)</option>
+                    <option value="es-PE-AlexNeural">Microsoft Alex (Perú) - Masculino</option>
+                    <option value="es-PE-CamilaNeural">Microsoft Camila (Perú) - Femenina</option>
+                    <option value="female1">Femenina 1 (Energética)</option>
+                    <option value="male1">Masculino 1 (Profesional)</option>
+                  </select>
+                </div>
+                
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1 block">Intervalo</label>
+                  <select
+                    value={reminderSettings.intervalMinutes}
+                    onChange={(e) => onReminderSettingsChange({ ...reminderSettings, intervalMinutes: Number(e.target.value) })}
+                    className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="15">Cada 15 minutos</option>
+                    <option value="30">Cada 30 minutos</option>
+                    <option value="60">Cada 1 hora</option>
+                    <option value="120">Cada 2 horas</option>
+                    <option value="180">Cada 3 horas</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                onClick={() => playPhrase(reminderSettings.phrase, reminderSettings.voiceType)}
+                className="w-full bg-indigo-100 dark:bg-indigo-900/40 hover:bg-indigo-200 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-medium rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
+              >
+                <Play className="w-4 h-4 fill-current" />
+                Probar Recordatorio
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

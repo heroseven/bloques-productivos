@@ -43,6 +43,41 @@ export default function App() {
   const [motivation, setMotivation] = useState<string>(() => {
     return localStorage.getItem("focusblocks_motivation") || "Quiero formar una familia y una casa propia";
   });
+  const [reminderSettings, setReminderSettings] = useState(() => {
+    const saved = localStorage.getItem("focusblocks_reminder_settings");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) { }
+    }
+    return {
+      enabled: true,
+      phrase: "Mi meta hoy es: 13 pomos diferentes y disfrutarlos no quedarnos con uno, reconozco el retraso de enfocarme en varios productos foco solo en clínicas y después los demás. tomo acción ahora.",
+      intervalMinutes: 60,
+      voiceType: 'es-ES-Journey-D'
+    };
+  });
+
+  useEffect(() => {
+    localStorage.setItem("focusblocks_reminder_settings", JSON.stringify(reminderSettings));
+  }, [reminderSettings]);
+
+  useEffect(() => {
+    if (!reminderSettings.enabled) return;
+    
+    // Convert minutes to milliseconds
+    const intervalMs = reminderSettings.intervalMinutes * 60 * 1000;
+    
+    // Require playPhrase here since it's a utility
+    // But we need to import it at the top of App.tsx
+    const intervalId = setInterval(() => {
+      import("./utils/voice").then(({ playPhrase }) => {
+        playPhrase(reminderSettings.phrase, reminderSettings.voiceType);
+      });
+    }, intervalMs);
+    
+    return () => clearInterval(intervalId);
+  }, [reminderSettings]);
 
   useEffect(() => {
     const savedStats = localStorage.getItem("focusblocks_stats");
@@ -107,7 +142,7 @@ export default function App() {
           "se trata de fluir",
           "suelta y relájate"
         ],
-        voiceType: 'female1',
+        voiceType: 'es-ES-Journey-F',
         frequencyType: 'interval',
         intervalSeconds: 30,
         randomTimes: 5
@@ -218,6 +253,8 @@ export default function App() {
           onLunchTimeChange={handleLunchTimeChange}
           motivation={motivation}
           onMotivationChange={handleMotivationChange}
+          reminderSettings={reminderSettings}
+          onReminderSettingsChange={setReminderSettings}
         />
       )}
 

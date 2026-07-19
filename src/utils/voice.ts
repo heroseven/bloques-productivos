@@ -1,4 +1,39 @@
-export const playPhrase = (phrase: string, voiceType: string) => {
+export const playPhrase = async (phrase: string, voiceType: string) => {
+  // Check if it's a server-side TTS voice
+  if (voiceType === 'es-ES-Journey-F' || voiceType === 'es-ES-Journey-D') {
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: phrase, voiceName: voiceType })
+      });
+      
+      if (!response.ok) {
+        throw new Error('TTS API failed');
+      }
+      
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      // Stop current browser synthesis if any
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      
+      audio.play();
+      
+      // Cleanup
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+      };
+      return;
+    } catch (err) {
+      console.error('Failed to play server TTS:', err);
+      // Fallback to browser TTS
+    }
+  }
+
   if (!("speechSynthesis" in window)) return;
   
   window.speechSynthesis.cancel(); // Stop any current speech
@@ -44,6 +79,16 @@ export const playPhrase = (phrase: string, voiceType: string) => {
   let selectedVoice;
   
   switch(voiceType) {
+    case 'es-PE-AlexNeural':
+      selectedVoice = esVoices.find((v) => v.name.includes("es-PE-AlexNeural") || v.name.includes("Alex") || v.name.includes("Peru")) || males[0];
+      utterance.pitch = 1.0;
+      utterance.rate = 1.0;
+      break;
+    case 'es-PE-CamilaNeural':
+      selectedVoice = esVoices.find((v) => v.name.includes("es-PE-CamilaNeural") || v.name.includes("Camila") || v.name.includes("Peru")) || females[0];
+      utterance.pitch = 1.0;
+      utterance.rate = 1.0;
+      break;
     case 'femaleSexy1': // Cálida/Susurrante
       selectedVoice = females.find((v) => v.name.toLowerCase().includes("natural") || v.name.toLowerCase().includes("premium")) || females[0];
       utterance.pitch = 0.85; // Un poco más grave da un tono más cálido
