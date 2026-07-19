@@ -13,11 +13,23 @@ async function startServer() {
   // Initialize Google Cloud TTS Client with the provided credentials
   let ttsClient: any = null;
   try {
-    const keyFilename = path.resolve(process.cwd(), 'google-credentials.json');
-    ttsClient = new textToSpeech.TextToSpeechClient({
-      keyFilename
-    });
-    console.log("Google Cloud TTS initialized.");
+    if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
+      ttsClient = new textToSpeech.TextToSpeechClient({
+        credentials: {
+          client_email: process.env.GOOGLE_CLIENT_EMAIL,
+          // Replace literal '\n' with actual newlines for Vercel compatibility
+          private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        },
+        projectId: process.env.GOOGLE_PROJECT_ID,
+      });
+      console.log("Google Cloud TTS initialized via Environment Variables.");
+    } else {
+      const keyFilename = path.resolve(process.cwd(), 'google-credentials.json');
+      ttsClient = new textToSpeech.TextToSpeechClient({
+        keyFilename
+      });
+      console.log("Google Cloud TTS initialized via google-credentials.json file.");
+    }
   } catch (err) {
     console.error("Failed to initialize Google Cloud TTS client:", err);
   }
