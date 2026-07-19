@@ -5,9 +5,10 @@ interface BedtimeCountdownProps {
   bedtime?: string;
   workdayEnd?: string;
   lunchTime?: string;
+  isCompact?: boolean;
 }
 
-export default function BedtimeCountdown({ bedtime = "21:45", workdayEnd = "17:30", lunchTime = "13:00" }: BedtimeCountdownProps) {
+export default function BedtimeCountdown({ bedtime = "21:45", workdayEnd = "17:30", lunchTime = "13:00", isCompact = false }: BedtimeCountdownProps) {
   const [timeLeft, setTimeLeft] = useState('');
   const [isUrgent, setIsUrgent] = useState(false);
   const [mode, setMode] = useState<'lunch' | 'work' | 'sleep'>('lunch');
@@ -142,7 +143,7 @@ export default function BedtimeCountdown({ bedtime = "21:45", workdayEnd = "17:3
   };
 
   return (
-    <div className={`fixed top-3 right-3 sm:top-6 sm:right-6 z-50 backdrop-blur-md px-3 py-2 rounded-2xl shadow-lg flex items-center gap-2 text-sm font-bold border transition-colors duration-500 ${getStyles()}`}>
+    <div className={`${isCompact ? '' : 'fixed top-3 right-3 sm:top-6 sm:right-6'} z-50 backdrop-blur-md px-3 py-2 rounded-2xl shadow-lg flex items-center gap-2 text-sm font-bold border transition-colors duration-500 ${getStyles()}`}>
       {renderIcon()}
       <div className="flex flex-col">
         <span className={`text-[10px] uppercase tracking-wider leading-none mb-0.5 ${getLabelStyles()}`}>

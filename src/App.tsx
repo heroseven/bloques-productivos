@@ -4,7 +4,7 @@ import Dashboard from "./components/Dashboard";
 import Game from "./components/Game";
 import Summary from "./components/Summary";
 import BedtimeCountdown from "./components/BedtimeCountdown";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Minimize2, Maximize2 } from "lucide-react";
 
 type View = "dashboard" | "game" | "summary";
 
@@ -22,6 +22,9 @@ export default function App() {
   const [stats, setStats] = useState<Stats>(DEFAULT_STATS);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     return localStorage.getItem("focusblocks_dark_mode") === "true";
+  });
+  const [isCompact, setIsCompact] = useState<boolean>(() => {
+    return localStorage.getItem("focusblocks_compact") === "true";
   });
   const [currentSettings, setCurrentSettings] = useState<GameSettings | null>(
     null,
@@ -101,6 +104,12 @@ export default function App() {
 
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev);
+  };
+
+  const toggleCompact = () => {
+    const next = !isCompact;
+    setIsCompact(next);
+    localStorage.setItem("focusblocks_compact", next.toString());
   };
 
 
@@ -230,16 +239,39 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900 overflow-x-hidden w-full min-w-0 transition-colors duration-300">
-      <button 
-        onClick={toggleDarkMode}
-        className="fixed top-3 left-3 sm:top-6 sm:left-6 z-50 p-2 sm:p-3 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
-        title="Toggle dark mode"
-      >
-        {isDarkMode ? <Sun className="w-5 h-5 sm:w-6 sm:h-6" /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6" />}
-      </button>
+    <div className={`bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900 overflow-x-hidden w-full min-w-0 transition-colors duration-300 ${isCompact ? 'flex flex-col h-screen overflow-hidden' : 'min-h-screen'}`}>
+      <div className={`fixed top-3 left-3 sm:top-6 sm:left-6 z-50 flex items-center gap-2 ${isCompact ? 'relative top-0 left-0 sm:top-0 sm:left-0 w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex-row justify-between shrink-0' : ''}`}>
+        <div className="flex gap-2">
+          <button 
+            onClick={toggleDarkMode}
+            className="p-2 sm:p-3 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center"
+            title="Toggle dark mode"
+          >
+            {isDarkMode ? <Sun className="w-5 h-5 sm:w-6 sm:h-6" /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6" />}
+          </button>
+          <button 
+            onClick={toggleCompact}
+            className="p-2 sm:p-3 rounded-full bg-white dark:bg-slate-800 shadow-md border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center"
+            title={isCompact ? "Modo Completo" : "Modo Compacto"}
+          >
+            {isCompact ? <Maximize2 className="w-5 h-5 sm:w-6 sm:h-6" /> : <Minimize2 className="w-5 h-5 sm:w-6 sm:h-6" />}
+          </button>
+        </div>
+        
+        {isCompact && (
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis px-2">
+            FocusBlocks
+          </h1>
+        )}
+        
+        {isCompact && (
+          <div className="relative static sm:static transform-none top-0 right-0">
+            <BedtimeCountdown bedtime={bedtime} workdayEnd={workdayEnd} lunchTime={lunchTime} isCompact={true} />
+          </div>
+        )}
+      </div>
 
-      <BedtimeCountdown bedtime={bedtime} workdayEnd={workdayEnd} lunchTime={lunchTime} />
+      {!isCompact && <BedtimeCountdown bedtime={bedtime} workdayEnd={workdayEnd} lunchTime={lunchTime} />}
       
       {view === "dashboard" && (
         <Dashboard 
@@ -255,6 +287,7 @@ export default function App() {
           onMotivationChange={handleMotivationChange}
           reminderSettings={reminderSettings}
           onReminderSettingsChange={setReminderSettings}
+          isCompact={isCompact}
         />
       )}
 
@@ -264,6 +297,7 @@ export default function App() {
           onFinish={handleFinishGame}
           onAbandon={handleAbandon}
           motivation={motivation}
+          isCompact={isCompact}
         />
       )}
 
@@ -275,6 +309,7 @@ export default function App() {
           actualSeconds={lastResults.actualSeconds}
           onHome={() => setView("dashboard")}
           onRestart={() => handleStartGame(currentSettings)}
+          isCompact={isCompact}
         />
       )}
     </div>

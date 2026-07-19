@@ -45,12 +45,14 @@ interface DashboardProps {
   onMotivationChange: (text: string) => void;
   reminderSettings: ReminderSettings;
   onReminderSettingsChange: (settings: ReminderSettings) => void;
+  isCompact?: boolean;
 }
 
 export default function Dashboard({ 
   stats, onStartGame, bedtime, onBedtimeChange, 
   workdayEnd, onWorkdayEndChange, lunchTime, onLunchTimeChange, 
-  motivation, onMotivationChange, reminderSettings, onReminderSettingsChange 
+  motivation, onMotivationChange, reminderSettings, onReminderSettingsChange,
+  isCompact
 }: DashboardProps) {
   const [duration, setDuration] = useState<number>(3);
   const [blocksCount, setBlocksCount] = useState<number>(3);
@@ -293,6 +295,23 @@ export default function Dashboard({
       return targetDate.toLocaleDateString("es-ES", { month: "long", year: "numeric" }).replace(/^\w/, (c) => c.toUpperCase());
     }
   };
+
+  if (isCompact) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] p-4">
+        <button
+          onClick={handleStart}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-full w-16 h-16 flex items-center justify-center transition-transform hover:scale-105 shadow-lg shadow-indigo-500/30"
+          title="Empezar Nueva Serie"
+        >
+          <Play className="w-8 h-8 ml-1 fill-current" />
+        </button>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
+          {blocksCount} bloques de {duration} min
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">

@@ -9,6 +9,7 @@ interface SummaryProps {
   actualSeconds: number;
   onHome: () => void;
   onRestart: () => void;
+  isCompact?: boolean;
 }
 
 export default function Summary({
@@ -18,6 +19,7 @@ export default function Summary({
   actualSeconds,
   onHome,
   onRestart,
+  isCompact,
 }: SummaryProps) {
   const completed = results.filter(Boolean).length;
   const failed = results.length - completed;
@@ -29,6 +31,32 @@ export default function Summary({
     const s = secs % 60;
     return `${m}m ${s}s`;
   };
+
+  if (isCompact) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] p-2">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Resumen</h2>
+        <div className="flex gap-4">
+          <div className="text-center">
+            <span className="text-2xl font-bold text-emerald-500">{completed}</span>
+            <span className="text-xs text-slate-500 block uppercase">Bien</span>
+          </div>
+          <div className="text-center">
+            <span className="text-2xl font-bold text-rose-500">{failed}</span>
+            <span className="text-xs text-slate-500 block uppercase">Mal</span>
+          </div>
+        </div>
+        <div className="flex gap-2 mt-4">
+           <button onClick={onRestart} className="p-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200">
+             <RotateCcw className="w-5 h-5" />
+           </button>
+           <button onClick={onHome} className="p-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300">
+             <Home className="w-5 h-5" />
+           </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto p-6 min-h-screen flex flex-col justify-center">

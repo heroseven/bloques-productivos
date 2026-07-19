@@ -22,9 +22,10 @@ interface GameProps {
   onFinish: (results: boolean[], strike: number, actualSeconds: number) => void;
   onAbandon: (actualSeconds: number, results: boolean[], strike: number) => void;
   motivation: string;
+  isCompact?: boolean;
 }
 
-export default function Game({ settings, onFinish, onAbandon, motivation }: GameProps) {
+export default function Game({ settings, onFinish, onAbandon, motivation, isCompact }: GameProps) {
   const [currentBlock, setCurrentBlock] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(settings.duration * 60);
   const [isRunning, setIsRunning] = useState(true);
@@ -266,6 +267,61 @@ export default function Game({ settings, onFinish, onAbandon, motivation }: Game
   };
 
   const progressPercentage = (currentBlock / settings.blocksCount) * 100;
+
+  if (isCompact) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[100px] relative">
+        {settings.backgroundSound !== "none" && (
+          <audio
+            ref={audioRef}
+            src={BACKGROUND_SOUNDS[settings.backgroundSound]}
+            loop
+            className="hidden"
+          />
+        )}
+        <div className="flex items-center gap-4">
+          <div className="text-4xl sm:text-5xl font-mono font-bold text-slate-800 dark:text-slate-100 tracking-tighter tabular-nums leading-none">
+            {formatTime(timeRemaining)}
+          </div>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => setIsRunning(!isRunning)}
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-md ${
+                isRunning
+                  ? "bg-amber-500 hover:bg-amber-600 text-white"
+                  : "bg-indigo-600 hover:bg-indigo-700 text-white"
+              }`}
+              title={isRunning ? "Pausar" : "Reanudar"}
+            >
+              {isRunning ? (
+                <Pause className="w-4 h-4 fill-current" />
+              ) : (
+                <Play className="w-4 h-4 fill-current ml-0.5" />
+              )}
+            </button>
+            <button
+              onClick={() => onAbandon(actualSecondsRef.current, results, currentStrike)}
+              className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-rose-100 dark:hover:bg-rose-900/30 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 flex items-center justify-center transition-colors"
+              title="Abandonar Serie"
+            >
+              <Square className="w-3 h-3 fill-current" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-3 flex items-center gap-2">
+          <span>{currentBlock + 1} / {settings.blocksCount}</span>
+          <div className="flex gap-1">
+            {results.map((_, idx) => (
+               <div key={idx} className={`w-2 h-2 rounded-full ${idx < currentBlock ? (results[idx] ? 'bg-emerald-500' : 'bg-rose-500') : idx === currentBlock ? 'bg-indigo-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'}`} />
+            ))}
+          </div>
+        </div>
+        
+        <Modal isOpen={showModal} onComplete={handleBlockComplete} />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 dark:bg-slate-800/50 p-2 sm:p-4 flex items-center justify-center">
