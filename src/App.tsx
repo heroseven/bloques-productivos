@@ -103,18 +103,27 @@ export default function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
+    let prevHeight = window.innerHeight;
+
     const handleResize = () => {
-      if (window.innerHeight <= 100) {
+      const currentHeight = window.innerHeight;
+      if (currentHeight <= 100 && prevHeight > 100) {
         setIsCompact(true);
         localStorage.setItem("focusblocks_compact", "true");
-      } else {
+      } else if (currentHeight > 100 && prevHeight <= 100) {
         setIsCompact(false);
         localStorage.setItem("focusblocks_compact", "false");
       }
+      prevHeight = currentHeight;
     };
     
+    // Check initial state without overwriting saved preferences if in normal bounds
+    if (window.innerHeight <= 100) {
+      setIsCompact(true);
+      localStorage.setItem("focusblocks_compact", "true");
+    }
+    
     window.addEventListener("resize", handleResize);
-    handleResize(); // Check on mount
     
     return () => window.removeEventListener("resize", handleResize);
   }, []);
