@@ -107,6 +107,9 @@ export default function App() {
       if (window.innerHeight <= 100) {
         setIsCompact(true);
         localStorage.setItem("focusblocks_compact", "true");
+      } else {
+        setIsCompact(false);
+        localStorage.setItem("focusblocks_compact", "false");
       }
     };
     
