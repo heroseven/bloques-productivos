@@ -1,19 +1,46 @@
+const blobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
 export const playPhrase = async (phrase: string, voiceType: string) => {
   // Check if it's a server-side TTS voice
   if (voiceType === 'es-ES-Journey-F' || voiceType === 'es-ES-Journey-D') {
     try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: phrase, voiceName: voiceType })
-      });
+      const cacheKey = `tts_${voiceType}_${phrase}`;
+      const cachedAudio = localStorage.getItem(cacheKey);
       
-      if (!response.ok) {
-        throw new Error('TTS API failed');
+      let audioUrl = '';
+      
+      if (cachedAudio) {
+        audioUrl = cachedAudio;
+      } else {
+        const response = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: phrase, voiceName: voiceType })
+        });
+        
+        if (!response.ok) {
+          throw new Error('TTS API failed');
+        }
+        
+        const audioBlob = await response.blob();
+        
+        try {
+          const base64Audio = await blobToBase64(audioBlob);
+          localStorage.setItem(cacheKey, base64Audio);
+        } catch (storageErr) {
+          console.warn('Could not save audio to localStorage (might be full):', storageErr);
+        }
+        
+        audioUrl = URL.createObjectURL(audioBlob);
       }
-      
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
+
       const audio = new Audio(audioUrl);
       
       // Stop current browser synthesis if any
@@ -25,8 +52,11 @@ export const playPhrase = async (phrase: string, voiceType: string) => {
       
       // Cleanup
       audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
+        if (!cachedAudio) {
+          URL.revokeObjectURL(audioUrl);
+        }
       };
+      
       return;
     } catch (err) {
       console.error('Failed to play server TTS:', err);

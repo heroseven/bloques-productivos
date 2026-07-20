@@ -102,6 +102,20 @@ export default function App() {
     localStorage.setItem("focusblocks_dark_mode", isDarkMode.toString());
   }, [isDarkMode]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerHeight <= 100) {
+        setIsCompact(true);
+        localStorage.setItem("focusblocks_compact", "true");
+      }
+    };
+    
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Check on mount
+    
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const toggleDarkMode = () => {
     setIsDarkMode(prev => !prev);
   };
