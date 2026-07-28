@@ -61,6 +61,23 @@ export default function Dashboard({
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
   const [chartView, setChartView] = useState<'week' | 'month'>('week');
   const [chartOffset, setChartOffset] = useState<number>(0);
+  
+  const [alertSoundEnabled, setAlertSoundEnabled] = useState<boolean>(() => {
+    return localStorage.getItem("focusblocks_alert_sound") !== "false"; // Default true
+  });
+  
+  const [alertVisualEnabled, setAlertVisualEnabled] = useState<boolean>(() => {
+    return localStorage.getItem("focusblocks_alert_visual") !== "false"; // Default true
+  });
+
+  useEffect(() => {
+    localStorage.setItem("focusblocks_alert_sound", alertSoundEnabled.toString());
+  }, [alertSoundEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem("focusblocks_alert_visual", alertVisualEnabled.toString());
+  }, [alertVisualEnabled]);
+
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(() => {
     const saved = localStorage.getItem("focusblocks_voice_settings");
     if (saved) {
@@ -112,7 +129,7 @@ export default function Dashboard({
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-    onStartGame({ duration, blocksCount, backgroundSound, voiceSettings });
+    onStartGame({ duration, blocksCount, backgroundSound, voiceSettings, alertSoundEnabled, alertVisualEnabled });
   };
 
   const successRate =
@@ -542,6 +559,55 @@ export default function Dashboard({
                   <option value="waves">Olas del mar</option>
                   <option value="forest">Bosque</option>
                 </select>
+              </div>
+            </div>
+
+            <div className="mb-8 border-t border-slate-100 dark:border-slate-700 pt-6">
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Alertas de Fin de Bloque</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <label className="flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3">
+                  <div className="relative shrink-0">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={alertSoundEnabled}
+                      onChange={(e) => setAlertSoundEnabled(e.target.checked)}
+                    />
+                    <div
+                      className={`block w-12 h-6 rounded-full transition-colors ${
+                        alertSoundEnabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"
+                      }`}
+                    ></div>
+                    <div
+                      className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${
+                        alertSoundEnabled ? "transform translate-x-6" : ""
+                      }`}
+                    ></div>
+                  </div>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Sonido de alerta (Beep)</span>
+                </label>
+                
+                <label className="flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3">
+                  <div className="relative shrink-0">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={alertVisualEnabled}
+                      onChange={(e) => setAlertVisualEnabled(e.target.checked)}
+                    />
+                    <div
+                      className={`block w-12 h-6 rounded-full transition-colors ${
+                        alertVisualEnabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"
+                      }`}
+                    ></div>
+                    <div
+                      className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${
+                        alertVisualEnabled ? "transform translate-x-6" : ""
+                      }`}
+                    ></div>
+                  </div>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Alerta visual (Parpadeo)</span>
+                </label>
               </div>
             </div>
 

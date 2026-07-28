@@ -7,9 +7,11 @@ interface ModalProps {
   isOpen: boolean;
   onComplete: (success: boolean) => void;
   isCompact?: boolean;
+  alertSoundEnabled?: boolean;
+  alertVisualEnabled?: boolean;
 }
 
-export default function Modal({ isOpen, onComplete, isCompact }: ModalProps) {
+export default function Modal({ isOpen, onComplete, isCompact, alertSoundEnabled = true, alertVisualEnabled = true }: ModalProps) {
   const message = React.useMemo(() => {
     return INSPIRATIONAL_MESSAGES[
       Math.floor(Math.random() * INSPIRATIONAL_MESSAGES.length)
@@ -23,7 +25,7 @@ export default function Modal({ isOpen, onComplete, isCompact }: ModalProps) {
     if (isOpen) {
       try {
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        if (AudioContextClass) {
+        if (AudioContextClass && alertSoundEnabled) {
           audioCtxRef.current = new AudioContextClass();
           
           const playBeep = () => {
@@ -34,15 +36,20 @@ export default function Modal({ isOpen, onComplete, isCompact }: ModalProps) {
               osc.connect(gain);
               gain.connect(audioCtxRef.current.destination);
               
-              osc.type = "square";
-              osc.frequency.setValueAtTime(880, audioCtxRef.current.currentTime); // A5
+              const now = audioCtxRef.current.currentTime;
               
-              gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
-              gain.gain.linearRampToValueAtTime(0.1, audioCtxRef.current.currentTime + 0.05);
-              gain.gain.exponentialRampToValueAtTime(0.001, audioCtxRef.current.currentTime + 0.5);
+              osc.type = "sawtooth";
+              osc.frequency.setValueAtTime(880, now);
+              osc.frequency.setValueAtTime(1100, now + 0.1);
+              osc.frequency.setValueAtTime(880, now + 0.2);
               
-              osc.start(audioCtxRef.current.currentTime);
-              osc.stop(audioCtxRef.current.currentTime + 0.5);
+              gain.gain.setValueAtTime(0, now);
+              gain.gain.linearRampToValueAtTime(0.2, now + 0.05);
+              gain.gain.setValueAtTime(0.2, now + 0.25);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+              
+              osc.start(now);
+              osc.stop(now + 0.4);
             } catch (e) {
               console.error("Error playing beep", e);
             }
@@ -83,7 +90,7 @@ export default function Modal({ isOpen, onComplete, isCompact }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm ${alertVisualEnabled ? 'bg-rose-900/70 animate-pulse' : 'bg-slate-900/60'}`}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

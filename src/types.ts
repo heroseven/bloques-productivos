@@ -44,6 +44,8 @@ export interface GameSettings {
   blocksCount: number;
   backgroundSound: string;
   voiceSettings: VoiceSettings;
+  alertSoundEnabled: boolean;
+  alertVisualEnabled: boolean;
 }
 
 export interface Template {

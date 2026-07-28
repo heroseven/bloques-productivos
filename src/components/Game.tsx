@@ -294,7 +294,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
         )}
         
         {showModal ? (
-          <div className="w-full flex items-center justify-between gap-2">
+          <div className={`w-full flex items-center justify-between gap-2 rounded-xl px-2 py-1 ${settings.alertVisualEnabled ? 'animate-pulse bg-rose-100 dark:bg-rose-900/60 border border-rose-500/50' : ''}`}>
             <span className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate pr-2">¿Cumpliste?</span>
             <div className="flex items-center gap-2 shrink-0">
               <button
@@ -355,7 +355,13 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
             </div>
           </>
         )}
-        <Modal isOpen={showModal} onComplete={handleBlockComplete} isCompact={true} />
+        <Modal 
+          isOpen={showModal} 
+          onComplete={handleBlockComplete} 
+          isCompact={true} 
+          alertSoundEnabled={settings.alertSoundEnabled}
+          alertVisualEnabled={settings.alertVisualEnabled}
+        />
       </div>
     );
   }
@@ -469,7 +475,12 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
         </div>
       </div>
 
-      <Modal isOpen={showModal} onComplete={handleBlockComplete} />
+      <Modal 
+        isOpen={showModal} 
+        onComplete={handleBlockComplete} 
+        alertSoundEnabled={settings.alertSoundEnabled}
+        alertVisualEnabled={settings.alertVisualEnabled}
+      />
     </div>
   );
 }
