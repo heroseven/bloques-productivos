@@ -46,6 +46,7 @@ export interface GameSettings {
   voiceSettings: VoiceSettings;
   alertSoundEnabled: boolean;
   alertVisualEnabled: boolean;
+  startSoundEnabled: boolean;
 }
 
 export interface Template {

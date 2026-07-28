@@ -149,7 +149,9 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
     if (isRunning && timeRemaining === settings.duration * 60) {
       if (hasStartedBlockRef.current !== currentBlock) {
         hasStartedBlockRef.current = currentBlock;
-        playStartSound();
+        if (settings.startSoundEnabled) {
+          playStartSound();
+        }
         if (settings.voiceSettings.enabled) {
           const phrase = getBlockStartPhrase(currentBlock, settings.blocksCount, settings.voiceSettings.startPhrase);
           if (phrase.trim() !== "") {
@@ -283,7 +285,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
 
   if (isCompact) {
     return (
-      <div className="w-full flex items-center justify-between gap-4">
+      <>
         {settings.backgroundSound !== "none" && (
           <audio
             ref={audioRef}
@@ -292,6 +294,8 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
             className="hidden"
           />
         )}
+        <div className="w-full flex items-center justify-between gap-4">
+
         
         {showModal ? (
           <div className={`w-full flex items-center justify-between gap-2 rounded-xl px-2 py-1 ${settings.alertVisualEnabled ? 'animate-pulse bg-rose-100 dark:bg-rose-900/60 border border-rose-500/50' : ''}`}>
@@ -363,11 +367,12 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
           alertVisualEnabled={settings.alertVisualEnabled}
         />
       </div>
+      </>
     );
   }
 
   return (
-    <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 dark:bg-slate-800/50 p-2 sm:p-4 flex items-center justify-center">
+    <>
       {settings.backgroundSound !== "none" && (
         <audio
           ref={audioRef}
@@ -376,6 +381,7 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
           className="hidden"
         />
       )}
+      <div className="w-full min-w-0 min-h-screen overflow-y-auto bg-slate-50 dark:bg-slate-800/50 p-2 sm:p-4 flex items-center justify-center">
       <div className="w-full min-w-0 max-w-3xl min-h-[320px] h-full flex-1 max-h-[800px] bg-white dark:bg-slate-800 rounded-[2rem] p-4 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col items-center justify-center gap-4 sm:gap-8 [@media(max-height:400px)]:gap-2 relative overflow-y-auto">
         
         {/* Header & Progress - Hidden on short screens */}
@@ -482,5 +488,6 @@ export default function Game({ settings, onFinish, onAbandon, motivation, isComp
         alertVisualEnabled={settings.alertVisualEnabled}
       />
     </div>
+    </>
   );
 }

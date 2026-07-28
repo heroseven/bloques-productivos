@@ -70,6 +70,10 @@ export default function Dashboard({
     return localStorage.getItem("focusblocks_alert_visual") !== "false"; // Default true
   });
 
+  const [startSoundEnabled, setStartSoundEnabled] = useState<boolean>(() => {
+    return localStorage.getItem("focusblocks_start_sound") !== "false"; // Default true
+  });
+
   useEffect(() => {
     localStorage.setItem("focusblocks_alert_sound", alertSoundEnabled.toString());
   }, [alertSoundEnabled]);
@@ -77,6 +81,10 @@ export default function Dashboard({
   useEffect(() => {
     localStorage.setItem("focusblocks_alert_visual", alertVisualEnabled.toString());
   }, [alertVisualEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem("focusblocks_start_sound", startSoundEnabled.toString());
+  }, [startSoundEnabled]);
 
   const [voiceSettings, setVoiceSettings] = useState<VoiceSettings>(() => {
     const saved = localStorage.getItem("focusblocks_voice_settings");
@@ -129,7 +137,7 @@ export default function Dashboard({
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-    onStartGame({ duration, blocksCount, backgroundSound, voiceSettings, alertSoundEnabled, alertVisualEnabled });
+    onStartGame({ duration, blocksCount, backgroundSound, voiceSettings, alertSoundEnabled, alertVisualEnabled, startSoundEnabled });
   };
 
   const successRate =
@@ -563,8 +571,30 @@ export default function Dashboard({
             </div>
 
             <div className="mb-8 border-t border-slate-100 dark:border-slate-700 pt-6">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Alertas de Fin de Bloque</h3>
+              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">Alertas Visuales y Sonoras</h3>
               <div className="grid md:grid-cols-2 gap-4">
+                <label className="flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3">
+                  <div className="relative shrink-0">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={startSoundEnabled}
+                      onChange={(e) => setStartSoundEnabled(e.target.checked)}
+                    />
+                    <div
+                      className={`block w-12 h-6 rounded-full transition-colors ${
+                        startSoundEnabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-600"
+                      }`}
+                    ></div>
+                    <div
+                      className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${
+                        startSoundEnabled ? "transform translate-x-6" : ""
+                      }`}
+                    ></div>
+                  </div>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Sonido de Inicio de Serie</span>
+                </label>
+
                 <label className="flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3">
                   <div className="relative shrink-0">
                     <input
@@ -584,7 +614,7 @@ export default function Dashboard({
                       }`}
                     ></div>
                   </div>
-                  <span className="font-medium text-slate-700 dark:text-slate-200">Sonido de alerta (Beep)</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Alerta de Fin (Beep)</span>
                 </label>
                 
                 <label className="flex items-center gap-3 cursor-pointer bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3">
@@ -606,7 +636,7 @@ export default function Dashboard({
                       }`}
                     ></div>
                   </div>
-                  <span className="font-medium text-slate-700 dark:text-slate-200">Alerta visual (Parpadeo)</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-200">Alerta de Fin (Parpadeo)</span>
                 </label>
               </div>
             </div>
